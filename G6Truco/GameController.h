@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAMECONTROLLER_H
+#define GAMECONTROLLER_H
 #include "Game.h"
 #include "G6TrucoView.h"
 class GameController {
@@ -7,6 +8,7 @@ private:
     CG6TrucoView view; // The game view.
 
 public:
-    void onCardPlayed(int playerIndex, int cardIndex, bool hideCard); // Called when a card is played.
-    void onBetCalled(int playerIndex, int bet); // Called when a bet is made.
+    void OnCardPlayed(int playerIndex, int cardIndex, bool hideCard); // Called when a card is played.
+    void OnBetCalled(int playerIndex, int bet); // Called when a bet is made.
 };
+#endif //GAMECONTROLLER_H
