@@ -36,6 +36,11 @@ private:
 	CBitmap bmpDeck;
 
 	CButton m_betButton;
+	CButton m_playCardButton;
+	CButton m_p1Button;
+	CButton m_p2Button;
+	CButton m_p3Button;
+	CButton m_p4Button;
 
 	void CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton);
 	//CBitmap* pOldBack;
