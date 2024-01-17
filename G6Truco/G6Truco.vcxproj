@@ -190,7 +190,7 @@
     <ClInclude Include="G6TrucoDoc.h" />
     <ClInclude Include="G6TrucoView.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameController.h" />
+    <ClInclude Include="TrucoController.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
@@ -213,6 +213,7 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Round.cpp" />
+    <ClCompile Include="TrucoController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="G6Truco.rc" />

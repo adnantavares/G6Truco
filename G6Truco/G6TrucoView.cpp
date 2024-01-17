@@ -25,6 +25,7 @@ IMPLEMENT_DYNCREATE(CG6TrucoView, CView)
 BEGIN_MESSAGE_MAP(CG6TrucoView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
+	ON_BN_CLICKED(1001, &CG6TrucoView::OnBnClickedRaiseBet)
 END_MESSAGE_MAP()
 
 // CG6TrucoView construction/destruction
@@ -49,11 +50,31 @@ CG6TrucoView::CG6TrucoView() noexcept
 	memDCCard2.CreateCompatibleDC(NULL);
 	memDCCard3.CreateCompatibleDC(NULL);
 
+}
 
+void CG6TrucoView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	CreateButton(m_betButton, _T("Raise Bet"), CRect(300, 320, 400, 370), 1001);
+}
+
+void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton)
+{
+	if (!button.Create(contentText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, rectButton, this, idButton))
+	{
+		AfxMessageBox(_T("Falha ao criar o botão!"));
+	}
 }
 
 CG6TrucoView::~CG6TrucoView()
 {
+}
+
+//TODO: Replace this to MVC pattern
+void CG6TrucoView::OnBnClickedRaiseBet()
+{
+	controller.OnBetCalled(1, 100);
 }
 
 BOOL CG6TrucoView::PreCreateWindow(CREATESTRUCT& cs)

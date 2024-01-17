@@ -4,11 +4,14 @@
 
 #pragma once
 #include "Game.h"
+#include "TrucoController.h"
 
 
 class CG6TrucoView : public CView
 {
 private:
+	TrucoController controller;
+
 	CBrush backgroundBrush;
 	CRect m_ImageRect;
 	BOOL cardClicked = false;
@@ -32,6 +35,9 @@ private:
 	CBitmap bmpCard3;
 	CBitmap bmpDeck;
 
+	CButton m_betButton;
+
+	void CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton);
 	//CBitmap* pOldBack;
 	//CBitmap* pOldCard1;
 	//CBitmap* pOldCard2;
@@ -50,6 +56,8 @@ public:
 	void drawGame(const Game& game); // Draws the current state of the game.
 	void updateView(); // Updates the view with changes in the game state.
 	void showBetOptions(); // Shows betting options to the player.
+	void OnBnClickedRaiseBet();
+	void CreateButton();
 
 // Overrides
 public:
@@ -57,6 +65,7 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual void OnLButtonDown(UINT nFlags, CPoint point);
 	virtual void OnRButtonDown(UINT nFlags, CPoint point);
+	virtual void OnInitialUpdate();
 protected:
 
 // Implementation
