@@ -183,13 +183,19 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="Deck.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="G6Truco.h" />
     <ClInclude Include="G6TrucoDoc.h" />
     <ClInclude Include="G6TrucoView.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameController.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Round.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>

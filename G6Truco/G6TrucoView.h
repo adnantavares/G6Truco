@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "Game.h"
 
 
 class CG6TrucoView : public CView
@@ -46,6 +47,9 @@ public:
 
 // Operations
 public:
+	void drawGame(const Game& game); // Draws the current state of the game.
+	void updateView(); // Updates the view with changes in the game state.
+	void showBetOptions(); // Shows betting options to the player.
 
 // Overrides
 public:
