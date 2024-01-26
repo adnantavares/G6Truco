@@ -20,6 +20,7 @@ public:
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	void CMainFrame::SetStatusBarText(const CString& strText);
 
 // Implementation
 public:

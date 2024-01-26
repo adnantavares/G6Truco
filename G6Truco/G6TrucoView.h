@@ -5,13 +5,16 @@
 #pragma once
 #include "Game.h"
 
+#define BUTTON1ID 10000
 
 class CG6TrucoView : public CView
 {
 private:
 	CBrush backgroundBrush;
-	CRect m_ImageRect;
-	BOOL cardClicked = false;
+	CRect m_Card1Rect;
+	CRect m_Card2Rect;
+	CRect m_Card3Rect;
+	int cardClicked = 0;
 	BOOL hideCard = false;
 
 	CDC memDCBack;
@@ -32,11 +35,16 @@ private:
 	CBitmap bmpCard3;
 	CBitmap bmpDeck;
 
+	CButton m_Button;
+
 	//CBitmap* pOldBack;
 	//CBitmap* pOldCard1;
 	//CBitmap* pOldCard2;
 	//CBitmap* pOldCard3;
 	//CBitmap* pOldBmpDeck;
+	void RepositionButton();
+	void SetStatusBarText(const CString& strText);
+
 protected: // create from serialization only
 	CG6TrucoView() noexcept;
 	DECLARE_DYNCREATE(CG6TrucoView)
@@ -57,6 +65,7 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual void OnLButtonDown(UINT nFlags, CPoint point);
 	virtual void OnRButtonDown(UINT nFlags, CPoint point);
+	virtual void OnInitialUpdate();
 protected:
 
 // Implementation
@@ -71,6 +80,7 @@ protected:
 
 // Generated message map functions
 protected:
+	void OnButton1Clicked();
 	DECLARE_MESSAGE_MAP()
 };
 

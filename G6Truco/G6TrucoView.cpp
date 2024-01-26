@@ -12,6 +12,7 @@
 
 #include "G6TrucoDoc.h"
 #include "G6TrucoView.h"
+#include "MainFrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,6 +26,7 @@ IMPLEMENT_DYNCREATE(CG6TrucoView, CView)
 BEGIN_MESSAGE_MAP(CG6TrucoView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
+	ON_BN_CLICKED(BUTTON1ID, OnButton1Clicked)
 END_MESSAGE_MAP()
 
 // CG6TrucoView construction/destruction
@@ -88,7 +90,6 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	//memDCBack.CreateCompatibleDC(NULL);
 	//CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
 
-	
 	imageCard1.Load(_T("res\\cards\\pj.png"));
 	bmpCard1.Attach(imageCard1.Detach());
 	CBitmap* pOldCard1 = memDCCard1.SelectObject(&bmpCard1);
@@ -111,20 +112,47 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	pDC->BitBlt(60, 400, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
 	pDC->BitBlt(120, 400, 220, 320, &memDCBack, 0, 0, SRCCOPY);
 
-	pDC->BitBlt(800, 800, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-	pDC->BitBlt(860, 800, 220, 320, &memDCCard2, 0, 0, SRCCOPY);
-	if (cardClicked) {
+
+	if (cardClicked == 1) {
+		if (hideCard) {
+			pDC->BitBlt(800, 770, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+		}
+		else {
+			pDC->BitBlt(800, 770, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
+		}
+		m_Card1Rect = CRect(800, 770, 800 + 220, 770 + 320);
+	}
+	else {
+		pDC->BitBlt(800, 800, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
+		m_Card1Rect = CRect(800, 800, 800 + 220, 800 + 320);
+	}
+	
+	if (cardClicked == 2) {
+		if (hideCard) {
+			pDC->BitBlt(860, 770, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+		}
+		else {
+			pDC->BitBlt(860, 770, 220, 320, &memDCCard2, 0, 0, SRCCOPY);
+		}
+		m_Card2Rect = CRect(860, 770, 860 + 220, 770 + 320);
+	}
+	else {
+		pDC->BitBlt(860, 800, 220, 320, &memDCCard2, 0, 0, SRCCOPY);
+		m_Card2Rect = CRect(860, 800, 860 + 220, 800 + 320);
+	}
+
+	if (cardClicked == 3) {
 		if (hideCard) {
 			pDC->BitBlt(920, 770, 220, 320, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
 			pDC->BitBlt(920, 770, 220, 320, &memDCCard3, 0, 0, SRCCOPY);
 		}
-		m_ImageRect = CRect(920, 800, 920 + 220, 800 + 320);
+		m_Card3Rect = CRect(920, 770, 920 + 220, 770 + 320);
 	}
 	else {
 		pDC->BitBlt(920, 800, 220, 320, &memDCCard3, 0, 0, SRCCOPY);
-		m_ImageRect = CRect(920, 780, 920 + 220, 780 + 320);
+		m_Card3Rect = CRect(920, 800, 920 + 220, 800 + 320);
 	}
 
 	pDC->BitBlt(1600, 400, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
@@ -141,10 +169,38 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 
 void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (m_ImageRect.PtInRect(point))
+	if (m_Card3Rect.PtInRect(point))
 	{
-		cardClicked = !cardClicked;
+		if (cardClicked == 3) {
+			cardClicked = 0;
+		}
+		else {
+			cardClicked = 3;
+		}
 		hideCard = false;
+		SetStatusBarText(L"Card 3 Clicked");
+		Invalidate();
+	}
+	else if (m_Card2Rect.PtInRect(point)) {
+		if (cardClicked ==2) {
+			cardClicked = 0;
+		}
+		else {
+			cardClicked = 2;
+		}
+		hideCard = false;
+		SetStatusBarText(L"Card 2 Clicked");
+		Invalidate();
+	}
+	else if (m_Card1Rect.PtInRect(point)) {
+		if (cardClicked == 1) {
+			cardClicked = 0;
+		}
+		else {
+			cardClicked = 1;
+		}
+		hideCard = false;
+		SetStatusBarText(L"Card 1 Clicked");
 		Invalidate();
 	}
 	CView::OnLButtonDown(nFlags, point);
@@ -152,15 +208,50 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	if (m_ImageRect.PtInRect(point))
+	if (m_Card3Rect.PtInRect(point))
 	{
-		cardClicked = true;
+		cardClicked = 3;
+		hideCard = true;
+		Invalidate();
+	}
+	else if (m_Card2Rect.PtInRect(point)) {
+		cardClicked = 2;
+		hideCard = true;
+		Invalidate();
+	}
+	else if (m_Card1Rect.PtInRect(point)) {
+		cardClicked = 1;
 		hideCard = true;
 		Invalidate();
 	}
 	CView::OnLButtonDown(nFlags, point);
 }
 
+void CG6TrucoView::OnInitialUpdate()
+{
+	//isso cria a janela GUI do botão real
+	m_Button.Create(L"Truco", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTON1ID);
+	RepositionButton();
+}
+
+void CG6TrucoView::RepositionButton()
+{
+	//trabalhe a posição do botão que você precisa
+	m_Button.MoveWindow(1300, 820, 180, 80);
+}
+
+void CG6TrucoView::OnButton1Clicked() 
+{
+	SetStatusBarText(L"Truco Button Clicked");
+}
+
+void CG6TrucoView::SetStatusBarText(const CString& strText) {
+	CMainFrame* pMainFrm = (CMainFrame*)AfxGetMainWnd();
+	if (pMainFrm != nullptr)
+	{
+		pMainFrm->SetStatusBarText(strText);
+	}
+}
 // CG6TrucoView diagnostics
 
 #ifdef _DEBUG

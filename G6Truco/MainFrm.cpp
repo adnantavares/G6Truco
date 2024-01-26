@@ -67,6 +67,11 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return TRUE;
 }
 
+void CMainFrame::SetStatusBarText(const CString& strText)
+{
+	m_wndStatusBar.SetPaneText(0, strText);
+}
+
 // CMainFrame diagnostics
 
 #ifdef _DEBUG
