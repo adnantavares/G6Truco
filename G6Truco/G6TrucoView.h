@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Game.h"
+#include "string"
 
 #define BUTTON1ID 10000
 
@@ -16,6 +17,8 @@ private:
 	CRect m_Card3Rect;
 	int cardClicked = 0;
 	BOOL hideCard = false;
+	int cardH = 320;
+	int cardW = 220;
 
 	CDC memDCBack;
 	CDC memDCCard1;
@@ -43,23 +46,30 @@ private:
 	//CBitmap* pOldCard3;
 	//CBitmap* pOldBmpDeck;
 	void RepositionButton();
+	void DrawCards(CDC* pDC);
 	void SetStatusBarText(const CString& strText);
+	const std::string cardsNameMap[4][10] = { 
+		{"c2","c3","c4","c5","c6","c7","cj","cq","ck","ca"},
+		{"e2","e3","e4","e5","e6","e7","ej","eq","ek","ea"},
+		{"o2","o3","o4","o5","o6","o7","oj","oq","ok","oa"},
+		{"p2","p3","p4","p5","p6","p7","pj","pq","pk","pa"} };
+	CDC* cardsMap[4][10];
 
 protected: // create from serialization only
 	CG6TrucoView() noexcept;
 	DECLARE_DYNCREATE(CG6TrucoView)
 
-// Attributes
+	// Attributes
 public:
 	CG6TrucoDoc* GetDocument() const;
 
-// Operations
+	// Operations
 public:
 	void drawGame(const Game& game); // Draws the current state of the game.
 	void updateView(); // Updates the view with changes in the game state.
 	void showBetOptions(); // Shows betting options to the player.
 
-// Overrides
+	// Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -68,7 +78,7 @@ public:
 	virtual void OnInitialUpdate();
 protected:
 
-// Implementation
+	// Implementation
 public:
 	virtual ~CG6TrucoView();
 #ifdef _DEBUG
@@ -78,7 +88,7 @@ public:
 
 protected:
 
-// Generated message map functions
+	// Generated message map functions
 protected:
 	void OnButton1Clicked();
 	DECLARE_MESSAGE_MAP()
@@ -86,6 +96,8 @@ protected:
 
 #ifndef _DEBUG  // debug version in G6TrucoView.cpp
 inline CG6TrucoDoc* CG6TrucoView::GetDocument() const
-   { return reinterpret_cast<CG6TrucoDoc*>(m_pDocument); }
+{
+	return reinterpret_cast<CG6TrucoDoc*>(m_pDocument);
+}
 #endif
 
