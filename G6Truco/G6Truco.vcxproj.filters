@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Services">
+      <UniqueIdentifier>{8fcf1e15-f070-4bec-8dab-cfb032a042b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\Connection">
+      <UniqueIdentifier>{20dff233-1309-4125-8764-3a55fddca643}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Services\Connection\Exceptions">
+      <UniqueIdentifier>{70306a07-09ca-4dba-8df6-4cccbc481084}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="G6Truco.h">
@@ -57,6 +66,18 @@
     <ClInclude Include="GameController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Services\Connection\ConnectionManager.h">
+      <Filter>Services\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Connection\ServerSocket.h">
+      <Filter>Services\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Connection\SocketBase.h">
+      <Filter>Services\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="Services\Connection\Exceptions\BufferOverflowException.h">
+      <Filter>Services\Connection\Exceptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="G6Truco.cpp">
@@ -73,6 +94,18 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Connection\ConnectionManager.cpp">
+      <Filter>Services\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Connection\ServerSocket.cpp">
+      <Filter>Services\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Connection\SocketBase.cpp">
+      <Filter>Services\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Connection\Exceptions\BufferOverflowException.cpp">
+      <Filter>Services\Connection\Exceptions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
