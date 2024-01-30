@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CARD_H
+#define CARD_H
+
 class Card {
 public:
     enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS };
@@ -8,3 +10,4 @@ private:
     Suit suit;
     Rank rank;
 };
+#endif //CARD_H

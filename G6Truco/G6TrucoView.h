@@ -5,6 +5,7 @@
 #pragma once
 #include "Game.h"
 #include "string"
+#include "TrucoController.h"
 
 #define BUTTONTRUCOID 10000
 #define BUTTONCREATEID 10001
@@ -13,6 +14,8 @@
 class CG6TrucoView : public CView
 {
 private:
+	TrucoController controller;
+
 	CBrush backgroundBrush;
 	CRect m_Card1Rect;
 	CRect m_Card2Rect;
@@ -45,6 +48,14 @@ private:
 	CButton buttonCreate;
 	CButton buttonJoin;
 
+	CButton m_betButton;
+	CButton m_playCardButton;
+	CButton m_p1Button;
+	CButton m_p2Button;
+	CButton m_p3Button;
+	CButton m_p4Button;
+
+	void CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton);
 	//CBitmap* pOldBack;
 	//CBitmap* pOldCard1;
 	//CBitmap* pOldCard2;
@@ -73,6 +84,8 @@ public:
 	void drawGame(const Game& game); // Draws the current state of the game.
 	void updateView(); // Updates the view with changes in the game state.
 	void showBetOptions(); // Shows betting options to the player.
+	void OnBnClickedRaiseBet();
+	void CreateButton();
 
 	// Overrides
 public:
