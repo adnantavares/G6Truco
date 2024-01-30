@@ -21,6 +21,7 @@ public:
     int DetermineWinner(); // Determines the winner of the round.
     void RaiseBet(int raise); // Raises the current bet (Truco, Seis, Nove, Doze).
     void DealCardsToPlayers();
+    std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
     void OnRaiseBet(Player* player, int bet);
     void StartRound();
     void NextPlayer();
