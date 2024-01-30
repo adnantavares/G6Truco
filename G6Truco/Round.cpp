@@ -15,3 +15,10 @@ Round::Round(std::array<Player*, 4>& players) {
 void Round::OnRaiseBet(Player* player, int bet) {
     
 }
+
+void Round::StartRound() {
+    deck.InitializeDeck();
+    deck.Shuffle();
+
+    activePlayerIndex = 0; //TODO: Create a rule to define the activePlayer
+}

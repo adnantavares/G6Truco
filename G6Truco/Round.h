@@ -12,6 +12,7 @@ private:
     std::vector<Card> playedCards; // Cards played in the round.
     Card vira;
     int currentBet; // The current bet (1, 3, 6, 9, 12).
+    int activePlayerIndex;
 
 public:
     Round();
@@ -20,6 +21,9 @@ public:
     int DetermineWinner(); // Determines the winner of the round.
     void RaiseBet(int raise); // Raises the current bet (Truco, Seis, Nove, Doze).
     void OnRaiseBet(Player* player, int bet);
+    void StartRound();
+    void NextPlayer();
+    int GetActivePlayerIndex() const;
 };
 
 #endif

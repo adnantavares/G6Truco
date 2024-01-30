@@ -305,6 +305,7 @@ void CG6TrucoView::OnButtonJoinClicked()
 {
 	SetStatusBarText(L"Join Button Clicked");
 	start = true;
+	controller.StartGame();
 	Invalidate();
 }
 

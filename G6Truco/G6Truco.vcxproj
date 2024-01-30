@@ -203,6 +203,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Deck.cpp" />
     <ClCompile Include="G6Truco.cpp" />
     <ClCompile Include="G6TrucoDoc.cpp" />
