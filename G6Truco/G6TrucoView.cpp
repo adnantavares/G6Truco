@@ -28,7 +28,9 @@ IMPLEMENT_DYNCREATE(CG6TrucoView, CView)
 BEGIN_MESSAGE_MAP(CG6TrucoView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
-	ON_BN_CLICKED(BUTTON1ID, OnButton1Clicked)
+	ON_BN_CLICKED(BUTTONTRUCOID, OnButtonTrucoClicked)
+	ON_BN_CLICKED(BUTTONCREATEID, OnButtonCreateClicked)
+	ON_BN_CLICKED(BUTTONJOINID, OnButtonJoinClicked)
 END_MESSAGE_MAP()
 
 // CG6TrucoView construction/destruction
@@ -107,86 +109,75 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	//memDCBack.CreateCompatibleDC(NULL);
 	//CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
 
-	//std::string pathCard = "res\\cards\\" + cardsNameMap[2][3] + ".png";
-	//std::wstring wide_string(pathCard.begin(), pathCard.end());
-	//imageCard1.Load(wide_string.c_str());
-	//bmpCard1.Attach(imageCard1.Detach());
-	//CBitmap* pOldCard1 = memDCCard1.SelectObject(&bmpCard1);
-
-	//imageCard2.Load(_T("res\\cards\\pq.png"));
-	//bmpCard2.Attach(imageCard2.Detach());
-	//CBitmap* pOldCard2 = memDCCard2.SelectObject(&bmpCard2);
-
-	//imageCard3.Load(_T("res\\cards\\pk.png"));
-	//bmpCard3.Attach(imageCard3.Detach());
-	//CBitmap* pOldCard3 = memDCCard3.SelectObject(&bmpCard3);
-
-
-
-	pDC->BitBlt(800, 0, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(860, 0, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(920, 0, cardW,  cardH, cardsMap[2][6], 0, 0, SRCCOPY);
-
-	pDC->BitBlt(0, 400, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(60, 400, cardW,  cardH, cardsMap[0][5], 0, 0, SRCCOPY);
-	pDC->BitBlt(120, 400, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-
-
-	if (cardClicked == 1) {
-		if (hideCard) {
-			pDC->BitBlt(800, 770, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-		}
-		else {
-			pDC->BitBlt(800, 770, cardW,  cardH, cardsMap[0][5], 0, 0, SRCCOPY);
-		}
-		m_Card1Rect = CRect(800, 770, 800 + cardW, 770 +  cardH);
-	}
-	else {
-		pDC->BitBlt(800, 800, cardW,  cardH, cardsMap[0][5], 0, 0, SRCCOPY);
-		m_Card1Rect = CRect(800, 800, 800 + cardW, 800 +  cardH);
-	}
-	
-	if (cardClicked == 2) {
-		if (hideCard) {
-			pDC->BitBlt(860, 770, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-		}
-		else {
-			pDC->BitBlt(860, 770, cardW,  cardH, cardsMap[1][5], 0, 0, SRCCOPY);
-		}
-		m_Card2Rect = CRect(860, 770, 860 + cardW, 770 +  cardH);
-	}
-	else {
-		pDC->BitBlt(860, 800, cardW,  cardH, cardsMap[1][5], 0, 0, SRCCOPY);
-		m_Card2Rect = CRect(860, 800, 860 + cardW, 800 +  cardH);
+	if (start) {
+		DrawCards(pDC);
 	}
 
-	if (cardClicked == 3) {
-		if (hideCard) {
-			pDC->BitBlt(920, 770, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-		}
-		else {
-			pDC->BitBlt(920, 770, cardW,  cardH, cardsMap[3][5], 0, 0, SRCCOPY);
-		}
-		m_Card3Rect = CRect(920, 770, 920 + cardW, 770 +  cardH);
-	}
-	else {
-		pDC->BitBlt(920, 800, cardW,  cardH, cardsMap[3][5], 0, 0, SRCCOPY);
-		m_Card3Rect = CRect(920, 800, 920 + cardW, 800 +  cardH);
-	}
-	
-	pDC->BitBlt(1600, 400, cardW,  cardH, cardsMap[1][2], 0, 0, SRCCOPY);
-	pDC->BitBlt(1660, 400, cardW,  cardH, cardsMap[1][5], 0, 0, SRCCOPY);
-	pDC->BitBlt(1720, 400, cardW,  cardH, &memDCBack, 0, 0, SRCCOPY);
-
-	pDC->BitBlt(860, 400, cardW,  cardH, cardsMap[3][4], 0, 0, SRCCOPY);
-	pDC->BitBlt(810, 500,  cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
+	pDC->BitBlt(810, 500, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
 
 	//bmpCard1.DeleteObject();
 	//bmpCard2.DeleteObject();
 	//bmpCard3.DeleteObject();
+	UpdateButtons();
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
+	pDC->BitBlt(800, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(860, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(920, 0, cardW, cardH, cardsMap[2][6], 0, 0, SRCCOPY);
+
+	pDC->BitBlt(0, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(60, 400, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+	pDC->BitBlt(120, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+
+
+	if (cardClicked == 1) {
+		if (hideCard) {
+			pDC->BitBlt(800, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+		}
+		else {
+			pDC->BitBlt(800, 770, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+		}
+		m_Card1Rect = CRect(800, 770, 800 + cardW, 770 + cardH);
+	}
+	else {
+		pDC->BitBlt(800, 800, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+		m_Card1Rect = CRect(800, 800, 800 + cardW, 800 + cardH);
+	}
+
+	if (cardClicked == 2) {
+		if (hideCard) {
+			pDC->BitBlt(860, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+		}
+		else {
+			pDC->BitBlt(860, 770, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+		}
+		m_Card2Rect = CRect(860, 770, 860 + cardW, 770 + cardH);
+	}
+	else {
+		pDC->BitBlt(860, 800, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+		m_Card2Rect = CRect(860, 800, 860 + cardW, 800 + cardH);
+	}
+
+	if (cardClicked == 3) {
+		if (hideCard) {
+			pDC->BitBlt(920, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+		}
+		else {
+			pDC->BitBlt(920, 770, cardW, cardH, cardsMap[3][5], 0, 0, SRCCOPY);
+		}
+		m_Card3Rect = CRect(920, 770, 920 + cardW, 770 + cardH);
+	}
+	else {
+		pDC->BitBlt(920, 800, cardW, cardH, cardsMap[3][5], 0, 0, SRCCOPY);
+		m_Card3Rect = CRect(920, 800, 920 + cardW, 800 + cardH);
+	}
+
+	pDC->BitBlt(1600, 400, cardW, cardH, cardsMap[1][2], 0, 0, SRCCOPY);
+	pDC->BitBlt(1660, 400, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+	pDC->BitBlt(1720, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+
+	pDC->BitBlt(860, 400, cardW, cardH, cardsMap[3][4], 0, 0, SRCCOPY);
 
 
 }
@@ -254,19 +245,46 @@ void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 void CG6TrucoView::OnInitialUpdate()
 {
 	//Create Button
-	m_Button.Create(L"Truco", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTON1ID);
-	RepositionButton();
+	buttonTruco.Create(L"Truco", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONTRUCOID);
+	buttonTruco.MoveWindow(1300, 820, 180, 80);
+
+	buttonCreate.Create(L"Create New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONCREATEID);
+	buttonCreate.MoveWindow(880, 780, 180, 80);
+
+	buttonJoin.Create(L"Join Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONJOINID);
+	buttonJoin.MoveWindow(880, 880, 180, 80);
 }
 
-void CG6TrucoView::RepositionButton()
-{
-	//Button position
-	m_Button.MoveWindow(1300, 820, 180, 80);
+void CG6TrucoView::UpdateButtons() {
+	if (start) {
+		buttonTruco.ShowWindow(SW_SHOW);
+		buttonCreate.ShowWindow(SW_HIDE);
+		buttonJoin.ShowWindow(SW_HIDE);
+	}
+	else {
+		buttonTruco.ShowWindow(SW_HIDE);
+		buttonCreate.ShowWindow(SW_SHOW);
+		buttonJoin.ShowWindow(SW_SHOW);
+	}
 }
 
-void CG6TrucoView::OnButton1Clicked() 
+void CG6TrucoView::OnButtonTrucoClicked() 
 {
 	SetStatusBarText(L"Truco Button Clicked");
+}
+
+void CG6TrucoView::OnButtonCreateClicked()
+{
+	SetStatusBarText(L"Create Button Clicked");
+	start = true;
+	Invalidate();
+}
+
+void CG6TrucoView::OnButtonJoinClicked()
+{
+	SetStatusBarText(L"Join Button Clicked");
+	start = true;
+	Invalidate();
 }
 
 void CG6TrucoView::SetStatusBarText(const CString& strText) {

@@ -6,7 +6,9 @@
 #include "Game.h"
 #include "string"
 
-#define BUTTON1ID 10000
+#define BUTTONTRUCOID 10000
+#define BUTTONCREATEID 10001
+#define BUTTONJOINID 10002
 
 class CG6TrucoView : public CView
 {
@@ -19,6 +21,7 @@ private:
 	BOOL hideCard = false;
 	int cardH = 320;
 	int cardW = 220;
+	bool start = false;
 
 	CDC memDCBack;
 	CDC memDCCard1;
@@ -38,15 +41,17 @@ private:
 	CBitmap bmpCard3;
 	CBitmap bmpDeck;
 
-	CButton m_Button;
+	CButton buttonTruco;
+	CButton buttonCreate;
+	CButton buttonJoin;
 
 	//CBitmap* pOldBack;
 	//CBitmap* pOldCard1;
 	//CBitmap* pOldCard2;
 	//CBitmap* pOldCard3;
 	//CBitmap* pOldBmpDeck;
-	void RepositionButton();
 	void DrawCards(CDC* pDC);
+	void UpdateButtons();
 	void SetStatusBarText(const CString& strText);
 	const std::string cardsNameMap[4][10] = { 
 		{"c2","c3","c4","c5","c6","c7","cj","cq","ck","ca"},
@@ -90,7 +95,9 @@ protected:
 
 	// Generated message map functions
 protected:
-	void OnButton1Clicked();
+	void OnButtonTrucoClicked();
+	void OnButtonCreateClicked();
+	void OnButtonJoinClicked();
 	DECLARE_MESSAGE_MAP()
 };
 
