@@ -25,3 +25,18 @@ void Deck::Shuffle()
     std::default_random_engine engine(seed);
     std::shuffle(cards.begin(), cards.end(), engine);
 }
+
+bool Deck::IsEmpty() const {
+    return cards.empty();
+}
+
+Card Deck::TakeTopCard() {
+    if (IsEmpty())
+    {
+        InitializeDeck();
+        Shuffle();
+    }
+    Card topCard = cards.back();
+    cards.pop_back();
+    return topCard;
+}

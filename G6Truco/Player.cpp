@@ -15,3 +15,8 @@ void Player::RaiseBetEvent(int bet) {
         raiseBetCallback(this, bet);
     }
 }
+
+void Player::ReceiveHand(std::vector<Card>& newHand)
+{
+    hand = newHand;
+}

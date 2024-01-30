@@ -20,6 +20,7 @@ public:
     void PlayCards(); // Method for players to play their cards.
     int DetermineWinner(); // Determines the winner of the round.
     void RaiseBet(int raise); // Raises the current bet (Truco, Seis, Nove, Doze).
+    void DealCardsToPlayers();
     void OnRaiseBet(Player* player, int bet);
     void StartRound();
     void NextPlayer();
