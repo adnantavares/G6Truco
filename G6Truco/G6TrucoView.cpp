@@ -260,12 +260,12 @@ void CG6TrucoView::OnInitialUpdate()
 	buttonJoin.MoveWindow(880, 880, 180, 80);
 
 	//Test buttons
-	CreateButton(m_betButton, _T("Raise Bet"), CRect(300, 320, 400, 370), 1001);
+	/*CreateButton(m_betButton, _T("Raise Bet"), CRect(300, 320, 400, 370), 1001);
 	CreateButton(m_playCardButton, _T("Play card"), CRect(450, 320, 550, 370), 1002);
 	CreateButton(m_p1Button, _T("P1"), CRect(200, 10, 250, 100), 1003);
 	CreateButton(m_p2Button, _T("P2"), CRect(100, 120, 150, 210), 1004);
 	CreateButton(m_p3Button, _T("P3"), CRect(200, 230, 250, 320), 1005);
-	CreateButton(m_p4Button, _T("P4"), CRect(300, 120, 350, 210), 1006);
+	CreateButton(m_p4Button, _T("P4"), CRect(300, 120, 350, 210), 1006);*/
 }
 
 void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton)
