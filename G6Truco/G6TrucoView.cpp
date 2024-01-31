@@ -70,11 +70,33 @@ CG6TrucoView::CG6TrucoView() noexcept
 			CBitmap* pOldBmpDeck = cardsMap[a][b]->SelectObject(&bmpCard);
 		}
 	}
+
+#pragma region Setting events
+	controller.ActivePlayerChangedEvent(std::bind(&CG6TrucoView::OnActivePlayerChangedEvent, this, std::placeholders::_1));
+	controller.RoundInformationsChangedEvent(std::bind(&CG6TrucoView::OnRoundInformationsChangedEvent, this, std::placeholders::_1));
+#pragma endregion
+
 }
 
 CG6TrucoView::~CG6TrucoView()
 {
 }
+
+//Use the following events to update the view informations
+#pragma region Events
+void CG6TrucoView::OnActivePlayerChangedEvent(Player* player) {
+	//player->GetPlayerName();
+	//player->GetHand();
+}
+
+void CG6TrucoView::OnRoundInformationsChangedEvent(Round* currentRoundInformations) {
+	//currentRoundInformations->GetViraCard();
+	//currentRoundInformations->GetAllPlayers();
+	//currentRoundInformations->GetActivePlayer();
+	//currentRoundInformations->GetActivePlayer()->GetPlayerName();
+}
+#pragma endregion
+
 
 //TODO: Replace this to MVC pattern
 void CG6TrucoView::OnBnClickedRaiseBet()

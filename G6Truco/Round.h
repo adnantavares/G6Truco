@@ -25,7 +25,14 @@ public:
     void OnRaiseBet(Player* player, int bet);
     void StartRound();
     void NextPlayer();
+#pragma region Getters and Setters
     int GetActivePlayerIndex() const;
+    Player* GetActivePlayer();
+    Card GetViraCard();
+    void SetViraCard(Card viraCard);
+    std::array<Player*, 4> GetAllPlayers();
+#pragma endregion
+
 };
 
 #endif

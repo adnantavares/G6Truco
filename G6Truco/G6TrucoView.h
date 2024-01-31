@@ -71,6 +71,12 @@ private:
 		{"p2","p3","p4","p5","p6","p7","pj","pq","pk","pa"} };
 	CDC* cardsMap[4][10];
 
+#pragma region Events
+	void OnActivePlayerChangedEvent(Player* player);
+	void OnRoundInformationsChangedEvent(Round* currentRoundInformations);
+#pragma endregion
+
+
 protected: // create from serialization only
 	CG6TrucoView() noexcept;
 	DECLARE_DYNCREATE(CG6TrucoView)

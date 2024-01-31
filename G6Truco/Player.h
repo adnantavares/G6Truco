@@ -11,14 +11,23 @@ private:
     std::vector<Card> hand; // Cards in the player's hand.
     bool isHandHidden; // Indicates if the card is hidden.
     std::function<void(Player*, int)> raiseBetCallback; // Event
+    CString playerName;
 
 public:
     Player();
-    void ReceiveHand(std::vector<Card>& newHand); // Receives the dealt cards.
     Card PlayCard(size_t cardIndex, bool hideCard); // Plays a card.
-    void ViewHand(); // Allows viewing the hand in Hand of Eleven.
+#pragma region Getters and Setters
+    void SetHand(std::vector<Card>& newHand);
+    std::vector<Card> GetHand();
+    void SetPlayerName(const CString& name);
+    CString GetPlayerName();
+#pragma endregion
+
+#pragma region Events
     void SetRaiseBetCallback(std::function<void(Player*, int)> callback);
     void RaiseBetEvent(int bet);
+#pragma endregion
+
 };
 
 #endif // PLAYER_H

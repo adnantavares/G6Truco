@@ -22,14 +22,14 @@ void Round::StartRound() {
     deck.Shuffle();
 
     DealCardsToPlayers();
-    vira = TakeCardFromTopDeck(1)[0];
+    SetViraCard(TakeCardFromTopDeck(1)[0]);
     activePlayerIndex = 0; //TODO: Create a rule to define the activePlayer
 }
 
 void Round::DealCardsToPlayers() {
     for (auto& player : players) {
         std::vector<Card> hand = TakeCardFromTopDeck(3);
-        player->ReceiveHand(hand);
+        player->SetHand(hand);
     }
 }
 
@@ -41,3 +41,28 @@ std::vector<Card> Round::TakeCardFromTopDeck(int numberOfCards)
     }
     return hand;
 }
+
+#pragma region Getters and setters
+int Round::GetActivePlayerIndex() const
+{
+    return activePlayerIndex;
+}
+
+Player* Round::GetActivePlayer()
+{
+    return players[GetActivePlayerIndex()];
+}
+Card Round::GetViraCard()
+{
+    return vira;
+}
+void Round::SetViraCard(Card viraCard)
+{
+    vira = viraCard;
+}
+std::array<Player*, 4> Round::GetAllPlayers()
+{
+    return players;
+}
+#pragma endregion
+
