@@ -13,7 +13,7 @@ shared_ptr<ServerSocket> ServerSocket::getInstance()
 	if (instance == nullptr)
 	{
 		instance = std::shared_ptr<ServerSocket>(new ServerSocket());
-		instance->Initialize(AI_PASSIVE);
+		instance->Initialize("127.0.0.1", AI_PASSIVE);
 	}
 
 	return instance;
@@ -21,7 +21,9 @@ shared_ptr<ServerSocket> ServerSocket::getInstance()
 
 vector<SOCKET> ServerSocket::ConnectToClients(int numberOfConnections)
 {
-
+	Bind();
+	Listen();
+	Accept();
 
 	return vector<SOCKET>();
 }

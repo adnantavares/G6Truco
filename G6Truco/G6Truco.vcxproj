@@ -191,6 +191,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Services\Connection\ClientSocket.h" />
     <ClInclude Include="Services\Connection\Exceptions\BufferOverflowException.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="Services\Connection\ServerSocket.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Services\Connection\ClientSocket.cpp" />
     <ClCompile Include="Services\Connection\Exceptions\BufferOverflowException.cpp" />
     <ClCompile Include="Services\Connection\ServerSocket.cpp" />
     <ClCompile Include="Services\Connection\ConnectionManager.cpp" />

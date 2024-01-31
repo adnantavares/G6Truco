@@ -78,6 +78,9 @@
     <ClInclude Include="Services\Connection\Exceptions\BufferOverflowException.h">
       <Filter>Services\Connection\Exceptions</Filter>
     </ClInclude>
+    <ClInclude Include="Services\Connection\ClientSocket.h">
+      <Filter>Services\Connection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="G6Truco.cpp">
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="Services\Connection\Exceptions\BufferOverflowException.cpp">
       <Filter>Services\Connection\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="Services\Connection\ClientSocket.cpp">
+      <Filter>Services\Connection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

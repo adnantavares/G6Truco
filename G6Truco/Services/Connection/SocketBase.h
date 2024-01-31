@@ -25,6 +25,9 @@ namespace G6Truco::Services::Connection
 		struct addrinfo hints;
 		struct addrinfo* addressInfo;
 
+		SOCKET commSocket;
+
+		int InitSocket(const char* ipAddress);
 		int ResolveAddress(const char* ipAddress);
 
 	protected:
@@ -33,13 +36,16 @@ namespace G6Truco::Services::Connection
 
 		SocketBase();
 
-		int Initialize(int addressInfoFlag = NULL);
+		int Bind();
+		int Listen();
+		int Accept();
+		int Initialize(const char* ipAddress, int addressInfoFlag = NULL);
 
-		void Connect();
+		int Connect();
 		void Disconnect();
 
-		int SendData(SOCKET remoteSocket, const char* data);
-		int ReceiveData(SOCKET remoteSocket, char* data);
+		int SendData(const char* data);
+		int ReceiveData(char* data);
 	};
 }
 
