@@ -1,6 +1,10 @@
-#pragma once
+#ifndef DECK_H
+#define DECK_H
 #include <vector>
 #include "Card.h"
+#include <algorithm> 
+#include <random>    
+#include <chrono>    
 
 class Deck {
 private:
@@ -8,8 +12,11 @@ private:
 
 public:
     Deck(); // Constructor to initialize the deck with 40 cards.
-    void shuffle(); // Shuffles the cards.
-    std::vector<Card> dealHand(); // Deals a hand of 3 cards.
-    Card flipVira(); // Flips the card that defines the manilhas.
+    void InitializeDeck();
+    void Shuffle(); // Shuffles the cards.
+    bool IsEmpty() const;
+    Card TakeTopCard();
+    std::vector<Card> DealHand(); // Deals a hand of 3 cards.
+    Card FlipVira(); // Flips the card that defines the manilhas.
 };
-
+#endif // DECK_H

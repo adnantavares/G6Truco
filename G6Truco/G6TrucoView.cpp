@@ -4,6 +4,7 @@
 
 #include "pch.h"
 #include "framework.h"
+
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
 // and search filter handlers and allows sharing of document code with that project.
 #ifndef SHARED_HANDLERS
@@ -19,6 +20,7 @@
 #endif
 
 
+
 // CG6TrucoView
 
 IMPLEMENT_DYNCREATE(CG6TrucoView, CView)
@@ -26,7 +28,10 @@ IMPLEMENT_DYNCREATE(CG6TrucoView, CView)
 BEGIN_MESSAGE_MAP(CG6TrucoView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
-	ON_BN_CLICKED(BUTTON1ID, OnButton1Clicked)
+	ON_BN_CLICKED(BUTTONTRUCOID, OnButtonTrucoClicked)
+	ON_BN_CLICKED(BUTTONCREATEID, OnButtonCreateClicked)
+	ON_BN_CLICKED(BUTTONJOINID, OnButtonJoinClicked)
+	ON_BN_CLICKED(1001, &CG6TrucoView::OnBnClickedRaiseBet)
 END_MESSAGE_MAP()
 
 // CG6TrucoView construction/destruction
@@ -38,7 +43,7 @@ CG6TrucoView::CG6TrucoView() noexcept
 
 
 	memDCBack.CreateCompatibleDC(NULL);
-	imageCardBack.Load(_T("res\\cards\\back_card.bmp"));
+	imageCardBack.Load(_T("res\\cards\\back.bmp"));
 	bmpBack.Attach(imageCardBack.Detach());
 	CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
 
@@ -47,15 +52,34 @@ CG6TrucoView::CG6TrucoView() noexcept
 	bmpDeck.Attach(imageDeck.Detach());
 	CBitmap* pOldBmpDeck = memDCDeck.SelectObject(&bmpDeck);
 
-	memDCCard1.CreateCompatibleDC(NULL);
-	memDCCard2.CreateCompatibleDC(NULL);
-	memDCCard3.CreateCompatibleDC(NULL);
+	//memDCCard1.CreateCompatibleDC(NULL);
+	//memDCCard2.CreateCompatibleDC(NULL);
+	//memDCCard3.CreateCompatibleDC(NULL);
 
-
+	//Initialize Image Matrix will all Deck
+	for (int a = 0; a < 4; a++) {
+		for (int b = 0; b < 10; b++) {
+			cardsMap[a][b] = new CDC;
+			cardsMap[a][b]->CreateCompatibleDC(NULL);
+			CImage imageCard;
+			std::string pathCard = "res\\cards\\" + cardsNameMap[a][b] + ".png";
+			std::wstring wide_string(pathCard.begin(), pathCard.end());
+			imageCard.Load(wide_string.c_str());
+			CBitmap bmpCard;
+			bmpCard.Attach(imageCard.Detach());
+			CBitmap* pOldBmpDeck = cardsMap[a][b]->SelectObject(&bmpCard);
+		}
+	}
 }
 
 CG6TrucoView::~CG6TrucoView()
 {
+}
+
+//TODO: Replace this to MVC pattern
+void CG6TrucoView::OnBnClickedRaiseBet()
+{
+	controller.OnBetCalled(1, 100);
 }
 
 BOOL CG6TrucoView::PreCreateWindow(CREATESTRUCT& cs)
@@ -80,7 +104,7 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	GetClientRect(&rect);
 	pDC->FillRect(&rect, &backgroundBrush);
 
-	// EXEMPLO DE COMO CARREGAR BITMAP DO RESOURCE
+	// How to load a bitmap from resources
 	//CBitmap bmpBack;
 	//if (!bmpBack.LoadBitmap(IDB_BACK_CARD))
 	//{
@@ -90,81 +114,77 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	//memDCBack.CreateCompatibleDC(NULL);
 	//CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
 
-	imageCard1.Load(_T("res\\cards\\pj.png"));
-	bmpCard1.Attach(imageCard1.Detach());
-	CBitmap* pOldCard1 = memDCCard1.SelectObject(&bmpCard1);
+	if (start) {
+		DrawCards(pDC);
+	}
 
-	imageCard2.Load(_T("res\\cards\\pq.png"));
-	bmpCard2.Attach(imageCard2.Detach());
-	CBitmap* pOldCard2 = memDCCard2.SelectObject(&bmpCard2);
+	pDC->BitBlt(810, 500, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
 
-	imageCard3.Load(_T("res\\cards\\pk.png"));
-	bmpCard3.Attach(imageCard3.Detach());
-	CBitmap* pOldCard3 = memDCCard3.SelectObject(&bmpCard3);
+	//bmpCard1.DeleteObject();
+	//bmpCard2.DeleteObject();
+	//bmpCard3.DeleteObject();
+	UpdateButtons();
+}
 
+void CG6TrucoView::DrawCards(CDC* pDC) {
+	pDC->BitBlt(800, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(860, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(920, 0, cardW, cardH, cardsMap[2][6], 0, 0, SRCCOPY);
 
-
-	pDC->BitBlt(800, 0, 220, 320, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(860, 0, 220, 320, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(920, 0, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-
-	pDC->BitBlt(0, 400, 220, 320, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(60, 400, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-	pDC->BitBlt(120, 400, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(0, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(60, 400, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+	pDC->BitBlt(120, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 
 
 	if (cardClicked == 1) {
 		if (hideCard) {
-			pDC->BitBlt(800, 770, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+			pDC->BitBlt(800, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(800, 770, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
+			pDC->BitBlt(800, 770, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
 		}
-		m_Card1Rect = CRect(800, 770, 800 + 220, 770 + 320);
+		m_Card1Rect = CRect(800, 770, 800 + cardW, 770 + cardH);
 	}
 	else {
-		pDC->BitBlt(800, 800, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-		m_Card1Rect = CRect(800, 800, 800 + 220, 800 + 320);
+		pDC->BitBlt(800, 800, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+		m_Card1Rect = CRect(800, 800, 800 + cardW, 800 + cardH);
 	}
-	
+
 	if (cardClicked == 2) {
 		if (hideCard) {
-			pDC->BitBlt(860, 770, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+			pDC->BitBlt(860, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(860, 770, 220, 320, &memDCCard2, 0, 0, SRCCOPY);
+			pDC->BitBlt(860, 770, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
 		}
-		m_Card2Rect = CRect(860, 770, 860 + 220, 770 + 320);
+		m_Card2Rect = CRect(860, 770, 860 + cardW, 770 + cardH);
 	}
 	else {
-		pDC->BitBlt(860, 800, 220, 320, &memDCCard2, 0, 0, SRCCOPY);
-		m_Card2Rect = CRect(860, 800, 860 + 220, 800 + 320);
+		pDC->BitBlt(860, 800, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+		m_Card2Rect = CRect(860, 800, 860 + cardW, 800 + cardH);
 	}
 
 	if (cardClicked == 3) {
 		if (hideCard) {
-			pDC->BitBlt(920, 770, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+			pDC->BitBlt(920, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(920, 770, 220, 320, &memDCCard3, 0, 0, SRCCOPY);
+			pDC->BitBlt(920, 770, cardW, cardH, cardsMap[3][5], 0, 0, SRCCOPY);
 		}
-		m_Card3Rect = CRect(920, 770, 920 + 220, 770 + 320);
+		m_Card3Rect = CRect(920, 770, 920 + cardW, 770 + cardH);
 	}
 	else {
-		pDC->BitBlt(920, 800, 220, 320, &memDCCard3, 0, 0, SRCCOPY);
-		m_Card3Rect = CRect(920, 800, 920 + 220, 800 + 320);
+		pDC->BitBlt(920, 800, cardW, cardH, cardsMap[3][5], 0, 0, SRCCOPY);
+		m_Card3Rect = CRect(920, 800, 920 + cardW, 800 + cardH);
 	}
 
-	pDC->BitBlt(1600, 400, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-	pDC->BitBlt(1660, 400, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-	pDC->BitBlt(1720, 400, 220, 320, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(1600, 400, cardW, cardH, cardsMap[1][2], 0, 0, SRCCOPY);
+	pDC->BitBlt(1660, 400, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+	pDC->BitBlt(1720, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 
-	pDC->BitBlt(860, 400, 220, 320, &memDCCard1, 0, 0, SRCCOPY);
-	pDC->BitBlt(810, 500, 320, 220, &memDCDeck, 0, 0, SRCCOPY);
+	pDC->BitBlt(860, 400, cardW, cardH, cardsMap[3][4], 0, 0, SRCCOPY);
 
-	bmpCard1.DeleteObject();
-	bmpCard2.DeleteObject();
-	bmpCard3.DeleteObject();
+
 }
 
 void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -229,20 +249,64 @@ void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 
 void CG6TrucoView::OnInitialUpdate()
 {
-	//isso cria a janela GUI do botão real
-	m_Button.Create(L"Truco", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTON1ID);
-	RepositionButton();
+	//Create Button
+	buttonTruco.Create(L"Truco", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONTRUCOID);
+	buttonTruco.MoveWindow(1300, 820, 180, 80);
+
+	buttonCreate.Create(L"Create New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONCREATEID);
+	buttonCreate.MoveWindow(880, 780, 180, 80);
+
+	buttonJoin.Create(L"Join Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONJOINID);
+	buttonJoin.MoveWindow(880, 880, 180, 80);
+
+	//Test buttons
+	/*CreateButton(m_betButton, _T("Raise Bet"), CRect(300, 320, 400, 370), 1001);
+	CreateButton(m_playCardButton, _T("Play card"), CRect(450, 320, 550, 370), 1002);
+	CreateButton(m_p1Button, _T("P1"), CRect(200, 10, 250, 100), 1003);
+	CreateButton(m_p2Button, _T("P2"), CRect(100, 120, 150, 210), 1004);
+	CreateButton(m_p3Button, _T("P3"), CRect(200, 230, 250, 320), 1005);
+	CreateButton(m_p4Button, _T("P4"), CRect(300, 120, 350, 210), 1006);*/
 }
 
-void CG6TrucoView::RepositionButton()
+void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton)
 {
-	//trabalhe a posição do botão que você precisa
-	m_Button.MoveWindow(1300, 820, 180, 80);
+	if (!button.Create(contentText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, rectButton, this, idButton))
+	{
+		AfxMessageBox(_T("Failed to create button!"));
+	}
 }
 
-void CG6TrucoView::OnButton1Clicked() 
+void CG6TrucoView::UpdateButtons() {
+	if (start) {
+		buttonTruco.ShowWindow(SW_SHOW);
+		buttonCreate.ShowWindow(SW_HIDE);
+		buttonJoin.ShowWindow(SW_HIDE);
+	}
+	else {
+		buttonTruco.ShowWindow(SW_HIDE);
+		buttonCreate.ShowWindow(SW_SHOW);
+		buttonJoin.ShowWindow(SW_SHOW);
+	}
+}
+
+void CG6TrucoView::OnButtonTrucoClicked() 
 {
 	SetStatusBarText(L"Truco Button Clicked");
+}
+
+void CG6TrucoView::OnButtonCreateClicked()
+{
+	SetStatusBarText(L"Create Button Clicked");
+	start = true;
+	Invalidate();
+}
+
+void CG6TrucoView::OnButtonJoinClicked()
+{
+	SetStatusBarText(L"Join Button Clicked");
+	start = true;
+	controller.StartGame();
+	Invalidate();
 }
 
 void CG6TrucoView::SetStatusBarText(const CString& strText) {
