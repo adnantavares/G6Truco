@@ -10,6 +10,8 @@
 #define BUTTONTRUCOID 10000
 #define BUTTONCREATEID 10001
 #define BUTTONJOINID 10002
+#define BUTTONACCEPTTRUCOID 10003
+#define BUTTONREJECTTRUCOID 10004
 
 class CG6TrucoView : public CView
 {
@@ -47,13 +49,8 @@ private:
 	CButton buttonTruco;
 	CButton buttonCreate;
 	CButton buttonJoin;
-
-	CButton m_betButton;
-	CButton m_playCardButton;
-	CButton m_p1Button;
-	CButton m_p2Button;
-	CButton m_p3Button;
-	CButton m_p4Button;
+	CButton buttonAcceptTruco;
+	CButton buttonRejectTruco;
 
 	void CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton);
 	//CBitmap* pOldBack;

@@ -275,22 +275,15 @@ void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 void CG6TrucoView::OnInitialUpdate()
 {
 	//Create Button
-	buttonTruco.Create(L"Truco", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONTRUCOID);
-	buttonTruco.MoveWindow(1300, 820, 180, 80);
-
 	buttonCreate.Create(L"Create New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONCREATEID);
 	buttonCreate.MoveWindow(880, 780, 180, 80);
 
 	buttonJoin.Create(L"Join Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONJOINID);
 	buttonJoin.MoveWindow(880, 880, 180, 80);
 
-	//Test buttons
-	/*CreateButton(m_betButton, _T("Raise Bet"), CRect(300, 320, 400, 370), 1001);
-	CreateButton(m_playCardButton, _T("Play card"), CRect(450, 320, 550, 370), 1002);
-	CreateButton(m_p1Button, _T("P1"), CRect(200, 10, 250, 100), 1003);
-	CreateButton(m_p2Button, _T("P2"), CRect(100, 120, 150, 210), 1004);
-	CreateButton(m_p3Button, _T("P3"), CRect(200, 230, 250, 320), 1005);
-	CreateButton(m_p4Button, _T("P4"), CRect(300, 120, 350, 210), 1006);*/
+	CreateButton(buttonAcceptTruco, _T("Accept"), CRect(100, 100, 200, 140), BUTTONACCEPTTRUCOID);
+	CreateButton(buttonTruco, _T("Truco"), CRect(210, 100, 310, 140), BUTTONTRUCOID);
+	CreateButton(buttonRejectTruco, _T("Reject"), CRect(320, 100, 420, 140), BUTTONREJECTTRUCOID);
 }
 
 void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton)
@@ -306,16 +299,21 @@ void CG6TrucoView::UpdateButtons() {
 		buttonTruco.ShowWindow(SW_SHOW);
 		buttonCreate.ShowWindow(SW_HIDE);
 		buttonJoin.ShowWindow(SW_HIDE);
+		buttonAcceptTruco.ShowWindow(SW_SHOW);
+		buttonRejectTruco.ShowWindow(SW_SHOW);
 	}
 	else {
 		buttonTruco.ShowWindow(SW_HIDE);
 		buttonCreate.ShowWindow(SW_SHOW);
 		buttonJoin.ShowWindow(SW_SHOW);
+		buttonAcceptTruco.ShowWindow(SW_HIDE);
+		buttonRejectTruco.ShowWindow(SW_HIDE);
 	}
 }
 
 void CG6TrucoView::OnButtonTrucoClicked() 
 {
+	buttonTruco.SetWindowTextW(L"TESTE");
 	SetStatusBarText(L"Truco Button Clicked");
 }
 
