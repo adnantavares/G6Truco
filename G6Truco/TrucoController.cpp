@@ -8,6 +8,7 @@ TrucoController::TrucoController()
 	player3.SetPlayerName(L"Adnan");
 	player4.SetPlayerName(L"Danilo");
 	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
+	TrucoController::round.RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
 }
 
 void TrucoController::PlayCard(int cardIndex)
@@ -61,4 +62,14 @@ void TrucoController::RaiseRoundInformationsChangedEvent(Round* currentRoundInfo
 	}
 }
 #pragma endregion
+
+#pragma region Event listeners
+void TrucoController::HandleRoundOver()
+{
+	int winnerTeamIndex = TrucoController::round.DetermineWinnerTeam();
+	//TODO: Check if has a game winner team, before start a new round
+	TrucoController::round.StartRound();
+}
+#pragma endregion
+
 

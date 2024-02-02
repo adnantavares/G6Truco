@@ -25,7 +25,7 @@ void Round::StartRound() {
     DealCardsToPlayers();
     SetViraCard(TakeCardFromTopDeck(1)[0]);
     activePlayerIndex = 0; //TODO: Create a rule to define the activePlayer
-    isRoundOver = false;
+    SetIsRoundOver(false);
 }
 
 void Round::NextPlayer()
@@ -49,12 +49,30 @@ std::vector<Card> Round::TakeCardFromTopDeck(int numberOfCards)
     return hand;
 }
 
+int Round::DetermineWinnerTeam() {
+    double highestStrength = 0;
+    Player* winningPlayer = nullptr;
+    CardStrengthCalculator strengthCalculator(vira);
+
+    for (const auto& roundCard : roundCards) {
+        double strength = strengthCalculator.GetCardStrength(roundCard.second);
+        if (strength > highestStrength) {
+            highestStrength = strength;
+            winningPlayer = roundCard.first;
+        }
+    }
+
+    int playerIndex = std::distance(players.begin(), std::find(players.begin(), players.end(), winningPlayer));
+    return playerIndex % 2; // 0 is first team, 1 is second team
+}
+
 void Round::PlayCard(Card playedCard)
 {
     bool isCardPlayed = players[activePlayerIndex]->PlayCard(playedCard);
     roundCards.push_back(std::make_pair(players[activePlayerIndex], playedCard));
-    isRoundOver = roundCards.size() == players.size();
+    SetIsRoundOver(roundCards.size() == players.size());
 }
+
 
 #pragma region Getters and setters
 int Round::GetActivePlayerIndex() const
@@ -86,5 +104,34 @@ bool Round::IsRoundOver() const
 {
     return isRoundOver;
 }
+void Round::SetIsRoundOver(bool roundOver)
+{
+    isRoundOver = roundOver;
+    if (isRoundOver) {
+        RaiseRoundOverEvent();
+    }
+}
+int Round::GetCurrentBet()
+{
+    return currentBet;
+}
+void Round::SetCurrentBet(int bet)
+{
+    currentBet = bet;
+}
 #pragma endregion
+
+#pragma region Events
+void Round::RoundOverEventListener(std::function<void()> callback)
+{
+    roundOverEvent = callback;
+}
+void Round::RaiseRoundOverEvent()
+{
+    if (roundOverEvent) {
+        roundOverEvent();
+    }
+}
+#pragma endregion
+
 

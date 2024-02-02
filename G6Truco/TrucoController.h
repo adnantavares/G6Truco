@@ -1,6 +1,8 @@
 #ifndef TRUCOCONTROLLER_H
 #define TRUCOCONTROLLER_H
 #include "Game.h"
+#include "CardStrengthCalculator.h"
+
 class TrucoController {
 private:
     Player player1, player2, player3, player4;
@@ -20,6 +22,7 @@ public:
     void RaiseActivePlayerChangedEvent(Player* currentPlayer);
     void RoundInformationsChangedEvent(std::function<void(Round*)> callback);
     void RaiseRoundInformationsChangedEvent(Round* currentRoundInformations);
+    void HandleRoundOver();
 #pragma endregion
 
 #pragma endregion
