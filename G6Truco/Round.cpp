@@ -18,12 +18,19 @@ void Round::OnRaiseBet(Player* player, int bet) {
 }
 
 void Round::StartRound() {
+    roundCards.clear();
     deck.InitializeDeck();
     deck.Shuffle();
 
     DealCardsToPlayers();
     SetViraCard(TakeCardFromTopDeck(1)[0]);
     activePlayerIndex = 0; //TODO: Create a rule to define the activePlayer
+    isRoundOver = false;
+}
+
+void Round::NextPlayer()
+{
+    activePlayerIndex = (activePlayerIndex + 1) % players.size();
 }
 
 void Round::DealCardsToPlayers() {
@@ -40,6 +47,13 @@ std::vector<Card> Round::TakeCardFromTopDeck(int numberOfCards)
         hand.push_back(deck.TakeTopCard());
     }
     return hand;
+}
+
+void Round::PlayCard(Card playedCard)
+{
+    bool isCardPlayed = players[activePlayerIndex]->PlayCard(playedCard);
+    roundCards.push_back(std::make_pair(players[activePlayerIndex], playedCard));
+    isRoundOver = roundCards.size() == players.size();
 }
 
 #pragma region Getters and setters
@@ -63,6 +77,14 @@ void Round::SetViraCard(Card viraCard)
 std::array<Player*, 4> Round::GetAllPlayers()
 {
     return players;
+}
+void Round::SetPlayers(std::array<Player*, 4> allPlayers)
+{
+    players = allPlayers;
+}
+bool Round::IsRoundOver() const
+{
+    return isRoundOver;
 }
 #pragma endregion
 

@@ -13,5 +13,11 @@ private:
 public:
     Card();
     Card(Suit suit, Rank rank);
+
+#pragma region Getters and Setter
+    Suit GetSuit() const;
+    Rank GetRank() const;
+#pragma endregion
+
 };
 #endif //CARD_H

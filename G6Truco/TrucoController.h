@@ -10,7 +10,7 @@ private:
 
 public:
     TrucoController();
-    void OnCardPlayed(int playerIndex, Card card); // Called when a card is played.
+    void PlayCard(int cardIndex); // Called when a card is played.
     void OnBetCalled(int playerIndex, int bet); // Called when a bet is made.
     void StartGame();
 

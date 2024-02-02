@@ -7,26 +7,29 @@ TrucoController::TrucoController()
 	player2.SetPlayerName(L"Priscila");
 	player3.SetPlayerName(L"Adnan");
 	player4.SetPlayerName(L"Danilo");
+	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
 }
 
-void TrucoController::OnCardPlayed(int playerIndex, Card card)
+void TrucoController::PlayCard(int cardIndex)
 {
-
+	if (cardIndex < TrucoController::round.GetActivePlayer()->GetHand().size())
+	{
+		TrucoController::round.PlayCard(TrucoController::round.GetActivePlayer()->GetHand()[cardIndex]);
+		TrucoController::round.NextPlayer();
+	}
 }
 
 void TrucoController::OnBetCalled(int playerIndex, int bet)
 {
 	std::array<Player*, 4> players = { &player1, &player2, &player3, &player4 };
-	Round round(players);
-
+	
 	player1.RaiseBetEvent(3);
 }
 
 void TrucoController::StartGame() {
-	std::array<Player*, 4> players = { &player1, &player2, &player3, &player4 };
-	Round round(players);
+	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
 
-	round.StartRound();
+	TrucoController::round.StartRound();
 	RaiseActivePlayerChangedEvent(round.GetActivePlayer());
 	RaiseRoundInformationsChangedEvent(&round);
 

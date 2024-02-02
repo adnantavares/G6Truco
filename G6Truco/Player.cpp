@@ -6,6 +6,20 @@ Player::Player()
 
 }
 
+bool Player::PlayCard(const Card& cardToPlay)
+{
+    auto it = std::find_if(hand.begin(), hand.end(), [&cardToPlay](const Card& card) {
+        return card.GetSuit() == cardToPlay.GetSuit() && card.GetRank() == cardToPlay.GetRank();
+    });
+
+    if (it != hand.end()) {
+        hand.erase(it);
+        return true;
+    }
+
+    return false; 
+}
+
 #pragma region Events
 void Player::SetRaiseBetCallback(std::function<void(Player*, int)> callback) {
     raiseBetCallback = callback;

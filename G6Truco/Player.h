@@ -10,12 +10,12 @@ class Player {
 private:
     std::vector<Card> hand; // Cards in the player's hand.
     bool isHandHidden; // Indicates if the card is hidden.
-    std::function<void(Player*, int)> raiseBetCallback; // Event
+    std::function<void(Player*, int)> raiseBetCallback;
     CString playerName;
 
 public:
     Player();
-    Card PlayCard(size_t cardIndex, bool hideCard); // Plays a card.
+    bool PlayCard(const Card& cardToPlay);
 #pragma region Getters and Setters
     void SetHand(std::vector<Card>& newHand);
     std::vector<Card> GetHand();
