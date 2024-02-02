@@ -188,6 +188,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Card.h" />
+    <ClInclude Include="CardStrengthCalculator.h" />
     <ClInclude Include="Deck.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="G6Truco.h" />
@@ -204,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Card.cpp" />
+    <ClCompile Include="CardStrengthCalculator.cpp" />
     <ClCompile Include="Deck.cpp" />
     <ClCompile Include="G6Truco.cpp" />
     <ClCompile Include="G6TrucoDoc.cpp" />
