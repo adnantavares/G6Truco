@@ -20,11 +20,9 @@ void TrucoController::PlayCard(int cardIndex)
 	}
 }
 
-void TrucoController::OnBetCalled(int playerIndex, int bet)
+void TrucoController::RaiseBet()
 {
-	std::array<Player*, 4> players = { &player1, &player2, &player3, &player4 };
-	
-	player1.RaiseBetEvent(3);
+	TrucoController::round.RaiseBet();
 }
 
 void TrucoController::StartGame() {
@@ -67,6 +65,7 @@ void TrucoController::RaiseRoundInformationsChangedEvent(Round* currentRoundInfo
 void TrucoController::HandleRoundOver()
 {
 	int winnerTeamIndex = TrucoController::round.DetermineWinnerTeam();
+	int currentBet = TrucoController::round.GetCurrentBet();
 	//TODO: Check if has a game winner team, before start a new round
 	TrucoController::round.StartRound();
 }

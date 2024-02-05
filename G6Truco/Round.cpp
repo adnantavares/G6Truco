@@ -3,11 +3,12 @@
 
 Round::Round()
 {
-
+    possibleBets = { 1, 3, 6, 9, 12 };
 }
 
 Round::Round(std::array<Player*, 4>& currentPlayers) {
     players = currentPlayers;
+    possibleBets = { 1, 3, 6, 9, 12 };
     for (auto& player : currentPlayers) {
         player->SetRaiseBetCallback(std::bind(&Round::OnRaiseBet, this, std::placeholders::_1, std::placeholders::_2));
     }
@@ -18,6 +19,7 @@ void Round::OnRaiseBet(Player* player, int bet) {
 }
 
 void Round::StartRound() {
+    currentBet = 1;
     roundCards.clear();
     deck.InitializeDeck();
     deck.Shuffle();
@@ -64,6 +66,15 @@ int Round::DetermineWinnerTeam() {
 
     int playerIndex = std::distance(players.begin(), std::find(players.begin(), players.end(), winningPlayer));
     return playerIndex % 2; // 0 is first team, 1 is second team
+}
+
+void Round::RaiseBet()
+{
+    auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
+    if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
+        // Next bet, if it is not the last one.
+        currentBet = *(std::next(it));
+    }
 }
 
 void Round::PlayCard(Card playedCard)

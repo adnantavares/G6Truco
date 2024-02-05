@@ -101,7 +101,7 @@ void CG6TrucoView::OnRoundInformationsChangedEvent(Round* currentRoundInformatio
 //TODO: Replace this to MVC pattern
 void CG6TrucoView::OnBnClickedRaiseBet()
 {
-	controller.OnBetCalled(1, 100);
+	
 }
 
 BOOL CG6TrucoView::PreCreateWindow(CREATESTRUCT& cs)
@@ -313,6 +313,7 @@ void CG6TrucoView::UpdateButtons() {
 
 void CG6TrucoView::OnButtonTrucoClicked() 
 {
+	controller.RaiseBet();
 	buttonTruco.SetWindowTextW(L"TESTE");
 	SetStatusBarText(L"Truco Button Clicked");
 }
