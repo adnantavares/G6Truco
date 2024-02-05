@@ -3,11 +3,19 @@
 
 TrucoController::TrucoController()
 {
-	player1.SetPlayerName(L"Pedro");
-	player2.SetPlayerName(L"Priscila");
-	player3.SetPlayerName(L"Adnan");
-	player4.SetPlayerName(L"Danilo");
-	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
+	std::array<std::unique_ptr<Player>, 4> players;
+
+	// Criação de jogadores humanos e CPUs.
+	players[0] = std::make_unique<Player>();
+	players[0]->SetPlayerName(L"Pedro");
+	players[1] = std::make_unique<Player>();
+	players[1]->SetPlayerName(L"Priscila");
+	players[2] = std::make_unique<Player>();
+	players[2]->SetPlayerName(L"Adnan");
+	players[3] = std::make_unique<Player>();
+	players[3]->SetPlayerName(L"Danilo");
+
+	TrucoController::round.SetPlayers(std::move(players));
 	TrucoController::round.RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
 }
 
@@ -26,7 +34,6 @@ void TrucoController::RaiseBet()
 }
 
 void TrucoController::StartGame() {
-	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
 
 	TrucoController::round.StartRound();
 	RaiseActivePlayerChangedEvent(round.GetActivePlayer());

@@ -5,7 +5,6 @@
 
 class TrucoController {
 private:
-    Player player1, player2, player3, player4;
     Round round;
     std::function<void(Player*)> activePlayerChangedEvent;
     std::function<void(Round*)> roundInformationsChangedEvent;

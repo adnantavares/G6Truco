@@ -6,14 +6,6 @@ Round::Round()
     possibleBets = { 1, 3, 6, 9, 12 };
 }
 
-Round::Round(std::array<Player*, 4>& currentPlayers) {
-    players = currentPlayers;
-    possibleBets = { 1, 3, 6, 9, 12 };
-    for (auto& player : currentPlayers) {
-        player->SetRaiseBetCallback(std::bind(&Round::OnRaiseBet, this, std::placeholders::_1, std::placeholders::_2));
-    }
-}
-
 void Round::OnRaiseBet(Player* player, int bet) {
     
 }
@@ -64,8 +56,13 @@ int Round::DetermineWinnerTeam() {
         }
     }
 
-    int playerIndex = std::distance(players.begin(), std::find(players.begin(), players.end(), winningPlayer));
-    return playerIndex % 2; // 0 is first team, 1 is second team
+    auto it = std::find_if(players.begin(), players.end(), [&winningPlayer](const std::unique_ptr<Player>& p) { return p.get() == winningPlayer; });
+    if (it != players.end()) {
+        int playerIndex = std::distance(players.begin(), it);
+        return playerIndex % 2; // 0 is first team, 1 is second team
+    }
+
+    return -1;
 }
 
 void Round::RaiseBet()
@@ -80,7 +77,7 @@ void Round::RaiseBet()
 void Round::PlayCard(Card playedCard)
 {
     bool isCardPlayed = players[activePlayerIndex]->PlayCard(playedCard);
-    roundCards.push_back(std::make_pair(players[activePlayerIndex], playedCard));
+    roundCards.push_back(std::make_pair(players[activePlayerIndex].get(), playedCard));
     SetIsRoundOver(roundCards.size() == players.size());
 }
 
@@ -93,7 +90,7 @@ int Round::GetActivePlayerIndex() const
 
 Player* Round::GetActivePlayer()
 {
-    return players[GetActivePlayerIndex()];
+    return players[GetActivePlayerIndex()].get();
 }
 Card Round::GetViraCard()
 {
@@ -103,13 +100,13 @@ void Round::SetViraCard(Card viraCard)
 {
     vira = viraCard;
 }
-std::array<Player*, 4> Round::GetAllPlayers()
+const std::array<std::unique_ptr<Player>, 4>& Round::GetAllPlayers() const
 {
     return players;
 }
-void Round::SetPlayers(std::array<Player*, 4> allPlayers)
+void Round::SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers)
 {
-    players = allPlayers;
+    players = std::move(allPlayers);
 }
 bool Round::IsRoundOver() const
 {
