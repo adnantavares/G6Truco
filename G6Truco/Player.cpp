@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 
-Player::Player() : isHandHidden(false)
+Player::Player(PlayerType type) : isHandHidden(false), playerType(type)
 {
 
 }

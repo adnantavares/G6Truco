@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "HumanPlayer.h"
 
-HumanPlayer::HumanPlayer()
+HumanPlayer::HumanPlayer() : Player(PlayerType::Human)
 {
 }
 

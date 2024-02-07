@@ -7,18 +7,22 @@
 #include <functional>
 
 class Player {
+public:
+    enum class PlayerType { Human, Cpu };
 protected:
     std::vector<Card> hand;
     bool isHandHidden;
     std::function<void(Player*, int)> raiseBetCallback;
     CString playerName;
+    
 
 public:
-    Player();
+    Player(PlayerType type);
     ~Player() = default;
+    PlayerType playerType;
 
     virtual Card PlayCard() = 0;
-
+    
 #pragma region Getters and Setters
     void SetHand(std::vector<Card>& newHand);
     std::vector<Card> GetHand() const;

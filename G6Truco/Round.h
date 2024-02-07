@@ -8,6 +8,7 @@
 #include <vector>
 #include <utility>
 #include <optional>
+#include "CPUPlayer.h"
 
 class Round {
 private:
@@ -46,6 +47,7 @@ public:
     void SetCurrentBet(int bet);
     bool IsHumanPlayer();
     void DefineWinningCard(Card playedCard);
+    CPUPlayer* GetCPUActivePlayer(); //nullPtr if the active player is not a CPUPlayer
 #pragma endregion
 
 #pragma region Events

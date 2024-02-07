@@ -29,6 +29,9 @@ void Round::NextPlayer()
     if (!IsHumanPlayer())
     {
         //If next player is a bot player, play its card automatically.
+        CPUPlayer* cpuPlayer = GetCPUActivePlayer();
+        cpuPlayer->SetWinningCard(winningCard); //Set winningCard in order to CPU player knows witch card to play
+        cpuPlayer->SetCurrentViraCard(GetViraCard());
         PlayCard();
         bool isRoundRestarted = activePlayerIndex == 0;
         if (!isRoundRestarted) activePlayerIndex = (activePlayerIndex + 1) % players.size();
@@ -157,6 +160,12 @@ void Round::DefineWinningCard(Card playedCard)
     if (!winningCard || NewCardIsStronger(playedCard, winningCard->second)) {
         winningCard = std::make_optional(std::make_pair(players[activePlayerIndex].get(), playedCard));
     }
+}
+CPUPlayer* Round::GetCPUActivePlayer()
+{
+    Player* activePlayer = GetActivePlayer();
+    CPUPlayer* cpuPlayer = dynamic_cast<CPUPlayer*>(activePlayer);
+    return cpuPlayer;
 }
 #pragma endregion
 

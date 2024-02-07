@@ -13,6 +13,9 @@ private:
 public:
     Card();
     Card(Suit suit, Rank rank);
+    bool operator==(const Card& other) const {
+        return suit == other.suit && rank == other.rank;
+    }
 
 #pragma region Getters and Setter
     Suit GetSuit() const;
