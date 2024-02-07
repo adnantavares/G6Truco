@@ -18,13 +18,20 @@ void Round::StartRound() {
 
     DealCardsToPlayers();
     SetViraCard(TakeCardFromTopDeck(1)[0]);
-    activePlayerIndex = 0; //TODO: Create a rule to define the activePlayer
+    activePlayerIndex = 0;
     SetIsRoundOver(false);
 }
 
 void Round::NextPlayer()
 {
     activePlayerIndex = (activePlayerIndex + 1) % players.size();
+    if (!IsHumanPlayer())
+    {
+        //If next player is a bot player, play its card automatically.
+        PlayCard();
+        bool isRoundRestarted = activePlayerIndex == 0;
+        if (!isRoundRestarted) activePlayerIndex = (activePlayerIndex + 1) % players.size();
+    }
 }
 
 void Round::DealCardsToPlayers() {
@@ -74,9 +81,9 @@ void Round::RaiseBet()
     }
 }
 
-void Round::PlayCard(Card playedCard)
+void Round::PlayCard()
 {
-    bool isCardPlayed = players[activePlayerIndex]->PlayCard(playedCard);
+    Card playedCard = players[activePlayerIndex]->PlayCard();
     roundCards.push_back(std::make_pair(players[activePlayerIndex].get(), playedCard));
     SetIsRoundOver(roundCards.size() == players.size());
 }
@@ -126,6 +133,12 @@ int Round::GetCurrentBet()
 void Round::SetCurrentBet(int bet)
 {
     currentBet = bet;
+}
+bool Round::IsHumanPlayer()
+{
+    Player* activePlayer = GetActivePlayer();
+    HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(activePlayer);
+    return humanPlayer != nullptr;
 }
 #pragma endregion
 

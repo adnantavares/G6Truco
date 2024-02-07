@@ -1,6 +1,7 @@
 #ifndef ROUND_H
 #define ROUND_H
 #include "Player.h"
+#include "HumanPlayer.h"
 #include "Deck.h"
 #include "CardStrengthCalculator.h"
 #include <array>
@@ -21,7 +22,7 @@ private:
 
 public:
     Round();
-    void PlayCard(Card playedCard); // Method for players to play their cards.
+    void PlayCard(); // Method for players(Humans or CPU) to play their cards.
     int DetermineWinnerTeam(); // Determines the winner of the round.
     void RaiseBet(); // Raises the current bet (Truco, Seis, Nove, Doze).
     void DealCardsToPlayers();
@@ -40,6 +41,7 @@ public:
     void SetIsRoundOver(bool roundOver);
     int GetCurrentBet();
     void SetCurrentBet(int bet);
+    bool IsHumanPlayer();
 #pragma endregion
 
 #pragma region Events

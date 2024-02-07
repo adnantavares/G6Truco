@@ -220,7 +220,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 3;
 		}
 		hideCard = false;
-		controller.PlayCard(2);
+		TryPlayCard(2);
 		SetStatusBarText(L"Card 3 Clicked");
 		Invalidate();
 	}
@@ -232,7 +232,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 2;
 		}
 		hideCard = false;
-		controller.PlayCard(1);
+		TryPlayCard(1);
 		SetStatusBarText(L"Card 2 Clicked");
 		Invalidate();
 	}
@@ -244,11 +244,17 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 1;
 		}
 		hideCard = false;
-		controller.PlayCard(0);
+		TryPlayCard(0);
 		SetStatusBarText(L"Card 1 Clicked");
 		Invalidate();
 	}
 	CView::OnLButtonDown(nFlags, point);
+}
+
+void CG6TrucoView::TryPlayCard(int cardIndex)
+{
+	bool cardHasBeenSelected = controller.TrySetSelectedCardIndex(cardIndex);
+	if (cardHasBeenSelected) controller.PlayCard();
 }
 
 void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)

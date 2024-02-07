@@ -1,23 +1,9 @@
 #include "pch.h"
 #include "Player.h"
 
-Player::Player()
+Player::Player() : isHandHidden(false)
 {
 
-}
-
-bool Player::PlayCard(const Card& cardToPlay)
-{
-    auto it = std::find_if(hand.begin(), hand.end(), [&cardToPlay](const Card& card) {
-        return card.GetSuit() == cardToPlay.GetSuit() && card.GetRank() == cardToPlay.GetRank();
-    });
-
-    if (it != hand.end()) {
-        hand.erase(it);
-        return true;
-    }
-
-    return false; 
 }
 
 #pragma region Events
@@ -38,7 +24,7 @@ void Player::SetHand(std::vector<Card>& newHand)
     hand = newHand;
 }
 
-std::vector<Card> Player::GetHand()
+std::vector<Card> Player::GetHand() const
 {
     return hand;
 }
@@ -48,7 +34,7 @@ void Player::SetPlayerName(const CString& name)
     playerName = name;
 }
 
-CString Player::GetPlayerName()
+CString Player::GetPlayerName() const
 {
     return playerName;
 }

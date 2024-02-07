@@ -89,6 +89,7 @@ public:
 	void showBetOptions(); // Shows betting options to the player.
 	void OnBnClickedRaiseBet();
 	void CreateButton();
+	void TryPlayCard(int cardIndex);
 
 	// Overrides
 public:

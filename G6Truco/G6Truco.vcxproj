@@ -189,12 +189,14 @@
   <ItemGroup>
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardStrengthCalculator.h" />
+    <ClInclude Include="CPUPlayer.h" />
     <ClInclude Include="Deck.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="G6Truco.h" />
     <ClInclude Include="G6TrucoDoc.h" />
     <ClInclude Include="G6TrucoView.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="TrucoController.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="pch.h" />
@@ -206,11 +208,13 @@
   <ItemGroup>
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="CardStrengthCalculator.cpp" />
+    <ClCompile Include="CPUPlayer.cpp" />
     <ClCompile Include="Deck.cpp" />
     <ClCompile Include="G6Truco.cpp" />
     <ClCompile Include="G6TrucoDoc.cpp" />
     <ClCompile Include="G6TrucoView.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
