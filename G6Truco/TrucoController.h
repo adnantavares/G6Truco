@@ -2,19 +2,22 @@
 #define TRUCOCONTROLLER_H
 #include "Game.h"
 #include "CardStrengthCalculator.h"
+#include "HumanPlayer.h"
+#include "CPUPlayer.h"
 
 class TrucoController {
 private:
-    Player player1, player2, player3, player4;
     Round round;
     std::function<void(Player*)> activePlayerChangedEvent;
     std::function<void(Round*)> roundInformationsChangedEvent;
 
 public:
     TrucoController();
-    void PlayCard(int cardIndex); // Called when a card is played.
-    void RaiseBet(); // Called when a bet is made.
+    void PlayCard();
+    void RaiseBet();
     void StartGame();
+    bool IsActivePlayerHuman();
+    bool TrySetSelectedCardIndex(int index);
 
 #pragma region Events
 #pragma region Round events

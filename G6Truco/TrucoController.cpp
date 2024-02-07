@@ -3,21 +3,26 @@
 
 TrucoController::TrucoController()
 {
-	player1.SetPlayerName(L"Pedro");
-	player2.SetPlayerName(L"Priscila");
-	player3.SetPlayerName(L"Adnan");
-	player4.SetPlayerName(L"Danilo");
-	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
+	std::array<std::unique_ptr<Player>, 4> players;
+
+	// Criação de jogadores humanos e CPUs.
+	players[0] = std::make_unique<HumanPlayer>();
+	players[0]->SetPlayerName(L"HUMAN-Pedro");
+	players[1] = std::make_unique<CPUPlayer>();
+	players[1]->SetPlayerName(L"BOT-Priscila");
+	players[2] = std::make_unique<HumanPlayer>();
+	players[2]->SetPlayerName(L"HUMAN-Adnan");
+	players[3] = std::make_unique<CPUPlayer>();
+	players[3]->SetPlayerName(L"BOT-Danilo");
+
+	TrucoController::round.SetPlayers(std::move(players));
 	TrucoController::round.RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
 }
 
-void TrucoController::PlayCard(int cardIndex)
+void TrucoController::PlayCard()
 {
-	if (cardIndex < TrucoController::round.GetActivePlayer()->GetHand().size())
-	{
-		TrucoController::round.PlayCard(TrucoController::round.GetActivePlayer()->GetHand()[cardIndex]);
-		TrucoController::round.NextPlayer();
-	}
+	TrucoController::round.PlayCard();
+	TrucoController::round.NextPlayer();
 }
 
 void TrucoController::RaiseBet()
@@ -26,12 +31,29 @@ void TrucoController::RaiseBet()
 }
 
 void TrucoController::StartGame() {
-	TrucoController::round.SetPlayers({ &player1, &player2, &player3, &player4 });
 
 	TrucoController::round.StartRound();
 	RaiseActivePlayerChangedEvent(round.GetActivePlayer());
 	RaiseRoundInformationsChangedEvent(&round);
 
+}
+
+//True if player is a HumanPlayer
+bool TrucoController::IsActivePlayerHuman()
+{
+	return round.IsHumanPlayer();
+}
+
+bool TrucoController::TrySetSelectedCardIndex(int index)
+{
+	if (IsActivePlayerHuman()) {
+		auto* humanPlayer = dynamic_cast<HumanPlayer*>(round.GetActivePlayer());
+		if (humanPlayer) {
+			humanPlayer->SetSelectCardIndex(index);
+			return true;
+		}
+	}
+	return false;
 }
 
 #pragma region Set events
