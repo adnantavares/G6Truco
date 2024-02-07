@@ -7,6 +7,7 @@
 #include <array>
 #include <vector>
 #include <utility>
+#include <optional>
 
 class Round {
 private:
@@ -14,6 +15,7 @@ private:
     std::array<std::unique_ptr<Player>, 4> players; // Pointers to the players in the round.
     std::vector<std::pair<Player*, Card>> roundCards; // Cards played in the round.
     Card vira;
+    std::optional<std::pair<Player*, Card>> winningCard; //The stronghest card in current round
     int currentBet; // The current bet (1, 3, 6, 9, 12).
     int activePlayerIndex;
     bool isRoundOver;
@@ -30,6 +32,7 @@ public:
     void OnRaiseBet(Player* player, int bet);
     void StartRound();
     void NextPlayer();
+    bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard);
 #pragma region Getters and Setters
     int GetActivePlayerIndex() const;
     Player* GetActivePlayer();
@@ -42,6 +45,7 @@ public:
     int GetCurrentBet();
     void SetCurrentBet(int bet);
     bool IsHumanPlayer();
+    void DefineWinningCard(Card playedCard);
 #pragma endregion
 
 #pragma region Events

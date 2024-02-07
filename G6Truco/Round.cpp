@@ -12,6 +12,7 @@ void Round::OnRaiseBet(Player* player, int bet) {
 
 void Round::StartRound() {
     currentBet = 1;
+    winningCard.reset();
     roundCards.clear();
     deck.InitializeDeck();
     deck.Shuffle();
@@ -32,6 +33,16 @@ void Round::NextPlayer()
         bool isRoundRestarted = activePlayerIndex == 0;
         if (!isRoundRestarted) activePlayerIndex = (activePlayerIndex + 1) % players.size();
     }
+}
+
+bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard)
+{
+    CardStrengthCalculator strengthCalculator(vira);
+    double newCardStrength = strengthCalculator.GetCardStrength(newCard);
+    double currentWinningCardStrength = strengthCalculator.GetCardStrength(currentWinningCard);
+    
+    return newCardStrength > currentWinningCardStrength;
+
 }
 
 void Round::DealCardsToPlayers() {
@@ -84,6 +95,7 @@ void Round::RaiseBet()
 void Round::PlayCard()
 {
     Card playedCard = players[activePlayerIndex]->PlayCard();
+    DefineWinningCard(playedCard);
     roundCards.push_back(std::make_pair(players[activePlayerIndex].get(), playedCard));
     SetIsRoundOver(roundCards.size() == players.size());
 }
@@ -140,6 +152,12 @@ bool Round::IsHumanPlayer()
     HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(activePlayer);
     return humanPlayer != nullptr;
 }
+void Round::DefineWinningCard(Card playedCard)
+{
+    if (!winningCard || NewCardIsStronger(playedCard, winningCard->second)) {
+        winningCard = std::make_optional(std::make_pair(players[activePlayerIndex].get(), playedCard));
+    }
+}
 #pragma endregion
 
 #pragma region Events
@@ -153,6 +171,7 @@ void Round::RaiseRoundOverEvent()
         roundOverEvent();
     }
 }
+
 #pragma endregion
 
 
