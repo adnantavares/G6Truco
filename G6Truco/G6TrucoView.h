@@ -8,10 +8,9 @@
 #include "TrucoController.h"
 
 #define BUTTONTRUCOID 10000
-#define BUTTONCREATEID 10001
-#define BUTTONJOINID 10002
-#define BUTTONACCEPTTRUCOID 10003
-#define BUTTONREJECTTRUCOID 10004
+#define BUTTONNEWGAMEID 10001
+#define BUTTONACCEPTTRUCOID 10002
+#define BUTTONREJECTTRUCOID 10003
 
 class CG6TrucoView : public CView
 {
@@ -24,8 +23,8 @@ private:
 	CRect m_Card3Rect;
 	int cardClicked = 0;
 	BOOL hideCard = false;
-	int cardH = 320;
-	int cardW = 220;
+	int cardH = 240;
+	int cardW = 165;
 	bool start = false;
 
 	CDC memDCBack;
@@ -47,8 +46,7 @@ private:
 	CBitmap bmpDeck;
 
 	CButton buttonTruco;
-	CButton buttonCreate;
-	CButton buttonJoin;
+	CButton buttonNewGame;
 	CButton buttonAcceptTruco;
 	CButton buttonRejectTruco;
 
@@ -114,8 +112,7 @@ protected:
 	// Generated message map functions
 protected:
 	void OnButtonTrucoClicked();
-	void OnButtonCreateClicked();
-	void OnButtonJoinClicked();
+	void OnButtonNewGameClicked();
 	DECLARE_MESSAGE_MAP()
 };
 

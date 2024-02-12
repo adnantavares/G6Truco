@@ -30,8 +30,7 @@ BEGIN_MESSAGE_MAP(CG6TrucoView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
 	ON_BN_CLICKED(BUTTONTRUCOID, OnButtonTrucoClicked)
-	ON_BN_CLICKED(BUTTONCREATEID, OnButtonCreateClicked)
-	ON_BN_CLICKED(BUTTONJOINID, OnButtonJoinClicked)
+	ON_BN_CLICKED(BUTTONNEWGAMEID, OnButtonNewGameClicked)
 	ON_BN_CLICKED(1001, &CG6TrucoView::OnBnClickedRaiseBet)
 END_MESSAGE_MAP()
 
@@ -44,7 +43,7 @@ CG6TrucoView::CG6TrucoView() noexcept
 
 
 	memDCBack.CreateCompatibleDC(NULL);
-	imageCardBack.Load(_T("res\\cards\\back.bmp"));
+	imageCardBack.Load(_T("res\\cards\\back.png"));
 	bmpBack.Attach(imageCardBack.Detach());
 	CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
 
@@ -145,7 +144,7 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 		DrawCards(pDC);
 	}
 
-	pDC->BitBlt(810, 500, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
+	pDC->BitBlt(820, 400, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
 
 	//bmpCard1.DeleteObject();
 	//bmpCard2.DeleteObject();
@@ -154,62 +153,62 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
-	
-	pDC->BitBlt(860, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(920, 0, cardW, cardH, cardsMap[2][6], 0, 0, SRCCOPY);
+	pDC->BitBlt(800, 10, cardW, cardH, cardsMap[2][6], 0, 0, SRCCOPY);
+	pDC->BitBlt(860, 10, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(920, 10, cardW, cardH, cardsMap[2][6], 0, 0, SRCCOPY);
 
-	pDC->BitBlt(0, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
-	pDC->BitBlt(60, 400, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
-	pDC->BitBlt(120, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(40, 350, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(100, 350, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+	pDC->BitBlt(160, 350, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 
 	Player* curPlay = currentRound->GetActivePlayer();
 	if (cardClicked == 1) {
 		if (hideCard) {
-			pDC->BitBlt(800, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+			pDC->BitBlt(800, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(800, 770, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+			pDC->BitBlt(800, 620, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
 		}
-		m_Card1Rect = CRect(800, 770, 800 + cardW, 770 + cardH);
+		m_Card1Rect = CRect(800, 620, 800 + cardW, 620 + cardH);
 	}
 	else {
-		pDC->BitBlt(800, 800, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		m_Card1Rect = CRect(800, 800, 800 + cardW, 800 + cardH);
+		pDC->BitBlt(800, 650, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+		m_Card1Rect = CRect(800, 650, 800 + cardW, 650 + cardH);
 	}
 
 	if (cardClicked == 2) {
 		if (hideCard) {
-			pDC->BitBlt(860, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+			pDC->BitBlt(860, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(860, 770, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+			pDC->BitBlt(860, 620, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
 		}
-		m_Card2Rect = CRect(860, 770, 860 + cardW, 770 + cardH);
+		m_Card2Rect = CRect(860, 620, 860 + cardW, 620 + cardH);
 	}
 	else {
-		pDC->BitBlt(860, 800, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-		m_Card2Rect = CRect(860, 800, 860 + cardW, 800 + cardH);
+		pDC->BitBlt(860, 650, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
+		m_Card2Rect = CRect(860, 650, 860 + cardW, 650 + cardH);
 	}
 
 	if (cardClicked == 3) {
 		if (hideCard) {
-			pDC->BitBlt(920, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+			pDC->BitBlt(920, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(920, 770, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+			pDC->BitBlt(920, 620, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 		}
-		m_Card3Rect = CRect(920, 770, 920 + cardW, 770 + cardH);
+		m_Card3Rect = CRect(920, 620, 920 + cardW, 620 + cardH);
 	}
 	else {
-		pDC->BitBlt(920, 800, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-		m_Card3Rect = CRect(920, 800, 920 + cardW, 800 + cardH);
+		pDC->BitBlt(920, 650, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+		m_Card3Rect = CRect(920, 650, 920 + cardW, 650 + cardH);
 	}
 
-	pDC->BitBlt(1600, 400, cardW, cardH, cardsMap[1][2], 0, 0, SRCCOPY);
-	pDC->BitBlt(1660, 400, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
-	pDC->BitBlt(1720, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	pDC->BitBlt(1600, 350, cardW, cardH, cardsMap[1][2], 0, 0, SRCCOPY);
+	pDC->BitBlt(1660, 350, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+	pDC->BitBlt(1720, 350, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 
-	pDC->BitBlt(860, 400, cardW, cardH, cardsMap[3][4], 0, 0, SRCCOPY);
+	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[3][4], 0, 0, SRCCOPY);
 
 
 }
@@ -286,11 +285,8 @@ void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 void CG6TrucoView::OnInitialUpdate()
 {
 	//Create Button
-	buttonCreate.Create(L"Create New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONCREATEID);
-	buttonCreate.MoveWindow(880, 780, 180, 80);
-
-	buttonJoin.Create(L"Join Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONJOINID);
-	buttonJoin.MoveWindow(880, 880, 180, 80);
+	buttonNewGame.Create(L"New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONNEWGAMEID);
+	buttonNewGame.MoveWindow(850, 650, 180, 80);
 
 	CreateButton(buttonAcceptTruco, _T("Accept"), CRect(100, 100, 200, 140), BUTTONACCEPTTRUCOID);
 	CreateButton(buttonTruco, _T("Truco"), CRect(210, 100, 310, 140), BUTTONTRUCOID);
@@ -308,15 +304,13 @@ void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rect
 void CG6TrucoView::UpdateButtons() {
 	if (start) {
 		buttonTruco.ShowWindow(SW_SHOW);
-		buttonCreate.ShowWindow(SW_HIDE);
-		buttonJoin.ShowWindow(SW_HIDE);
+		buttonNewGame.ShowWindow(SW_HIDE);
 		buttonAcceptTruco.ShowWindow(SW_SHOW);
 		buttonRejectTruco.ShowWindow(SW_SHOW);
 	}
 	else {
 		buttonTruco.ShowWindow(SW_HIDE);
-		buttonCreate.ShowWindow(SW_SHOW);
-		buttonJoin.ShowWindow(SW_SHOW);
+		buttonNewGame.ShowWindow(SW_SHOW);
 		buttonAcceptTruco.ShowWindow(SW_HIDE);
 		buttonRejectTruco.ShowWindow(SW_HIDE);
 	}
@@ -329,16 +323,9 @@ void CG6TrucoView::OnButtonTrucoClicked()
 	SetStatusBarText(L"Truco Button Clicked");
 }
 
-void CG6TrucoView::OnButtonCreateClicked()
+void CG6TrucoView::OnButtonNewGameClicked()
 {
-	SetStatusBarText(L"Create Button Clicked");
-	start = true;
-	Invalidate();
-}
-
-void CG6TrucoView::OnButtonJoinClicked()
-{
-	SetStatusBarText(L"Join Button Clicked");
+	SetStatusBarText(L"New Game Button Clicked");
 	start = true;
 	controller.StartGame();
 }
