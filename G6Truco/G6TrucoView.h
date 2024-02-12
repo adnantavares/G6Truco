@@ -67,6 +67,7 @@ private:
 		{"o2","o3","o4","o5","o6","o7","oj","oq","ok","oa"},
 		{"p2","p3","p4","p5","p6","p7","pj","pq","pk","pa"} };
 	CDC* cardsMap[4][10];
+	Round* currentRound;
 
 #pragma region Events
 	void OnActivePlayerChangedEvent(Player* player);

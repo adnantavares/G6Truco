@@ -4,6 +4,7 @@
 
 #include "pch.h"
 #include "framework.h"
+#include <algorithm>
 
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
 // and search filter handlers and allows sharing of document code with that project.
@@ -84,6 +85,7 @@ CG6TrucoView::~CG6TrucoView()
 
 //Use the following events to update the view informations
 #pragma region Events
+
 void CG6TrucoView::OnActivePlayerChangedEvent(Player* player) {
 	//player->GetPlayerName();
 	//player->GetHand();
@@ -94,6 +96,9 @@ void CG6TrucoView::OnRoundInformationsChangedEvent(Round* currentRoundInformatio
 	//currentRoundInformations->GetAllPlayers();
 	//currentRoundInformations->GetActivePlayer();
 	//currentRoundInformations->GetActivePlayer()->GetPlayerName();
+	currentRound = currentRoundInformations;
+	//currentPlayers = RotatePlayers(currentRound->GetAllPlayers(), currentRound->GetActivePlayerIndex());
+	Invalidate();
 }
 #pragma endregion
 
@@ -149,7 +154,7 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
-	pDC->BitBlt(800, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+	
 	pDC->BitBlt(860, 0, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 	pDC->BitBlt(920, 0, cardW, cardH, cardsMap[2][6], 0, 0, SRCCOPY);
 
@@ -157,18 +162,18 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 	pDC->BitBlt(60, 400, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
 	pDC->BitBlt(120, 400, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 
-
+	Player* curPlay = currentRound->GetActivePlayer();
 	if (cardClicked == 1) {
 		if (hideCard) {
 			pDC->BitBlt(800, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(800, 770, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+			pDC->BitBlt(800, 770, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
 		}
 		m_Card1Rect = CRect(800, 770, 800 + cardW, 770 + cardH);
 	}
 	else {
-		pDC->BitBlt(800, 800, cardW, cardH, cardsMap[0][5], 0, 0, SRCCOPY);
+		pDC->BitBlt(800, 800, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
 		m_Card1Rect = CRect(800, 800, 800 + cardW, 800 + cardH);
 	}
 
@@ -177,12 +182,12 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 			pDC->BitBlt(860, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(860, 770, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+			pDC->BitBlt(860, 770, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
 		}
 		m_Card2Rect = CRect(860, 770, 860 + cardW, 770 + cardH);
 	}
 	else {
-		pDC->BitBlt(860, 800, cardW, cardH, cardsMap[1][5], 0, 0, SRCCOPY);
+		pDC->BitBlt(860, 800, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
 		m_Card2Rect = CRect(860, 800, 860 + cardW, 800 + cardH);
 	}
 
@@ -191,12 +196,12 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 			pDC->BitBlt(920, 770, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 		}
 		else {
-			pDC->BitBlt(920, 770, cardW, cardH, cardsMap[3][5], 0, 0, SRCCOPY);
+			pDC->BitBlt(920, 770, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 		}
 		m_Card3Rect = CRect(920, 770, 920 + cardW, 770 + cardH);
 	}
 	else {
-		pDC->BitBlt(920, 800, cardW, cardH, cardsMap[3][5], 0, 0, SRCCOPY);
+		pDC->BitBlt(920, 800, cardW, cardH, cardsMap[curPlay->GetHand().at(0).GetSuit()][curPlay->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 		m_Card3Rect = CRect(920, 800, 920 + cardW, 800 + cardH);
 	}
 
@@ -220,7 +225,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 3;
 		}
 		hideCard = false;
-		TryPlayCard(2);
+		//TryPlayCard(2);
 		SetStatusBarText(L"Card 3 Clicked");
 		Invalidate();
 	}
@@ -232,7 +237,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 2;
 		}
 		hideCard = false;
-		TryPlayCard(1);
+		//TryPlayCard(1);
 		SetStatusBarText(L"Card 2 Clicked");
 		Invalidate();
 	}
@@ -244,7 +249,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 1;
 		}
 		hideCard = false;
-		TryPlayCard(0);
+		//TryPlayCard(0);
 		SetStatusBarText(L"Card 1 Clicked");
 		Invalidate();
 	}
@@ -336,7 +341,6 @@ void CG6TrucoView::OnButtonJoinClicked()
 	SetStatusBarText(L"Join Button Clicked");
 	start = true;
 	controller.StartGame();
-	Invalidate();
 }
 
 void CG6TrucoView::SetStatusBarText(const CString& strText) {
