@@ -83,7 +83,7 @@ void TrucoController::RaiseRoundInformationsChangedEvent(Round* currentRoundInfo
 #pragma region Event listeners
 void TrucoController::HandleRoundOver()
 {
-	int winnerTeamIndex = TrucoController::round.DetermineWinnerTeam();
+	int winnerTeamIndex = TrucoController::round.GetWinnerTeam();
 	int currentBet = TrucoController::round.GetCurrentBet();
 	
 	//TODO: Check if has a game winner team, before start a new round

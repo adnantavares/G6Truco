@@ -96,12 +96,12 @@ void CPUPlayer::MonitorRoundState(Round& round)
 {
 	// Bot player keeps monitoring the round in order to play when it is its turn
 	std::thread activePlayerThread([this, &round]() {
-		std::unique_lock l(playerMutex);//, std::defer_lock);
+		std::unique_lock l(playerMutex);
 
 		while (true)
 		{
 			CPUPlayer* cpuPlayer = round.GetCPUActivePlayer();
-			auto test = this->GetPlayerName();
+
 			//If next player is this bot player, play its card automatically.
 			if (cpuPlayer != nullptr && cpuPlayer->GetPlayerName() == this->GetPlayerName())
 			{

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Round.h"
 
+
 Round::Round()
 {
     activePlayerIndex = 0;
@@ -22,14 +23,23 @@ void Round::StartRound(int firstPlayer) {
     SetViraCard(TakeCardFromTopDeck(1)[0]);
 
     activePlayerIndex = firstPlayer;
-    SetIsRoundOver(false);
+    roundWinnerTeam = -1;
+    points = std::vector(2, 0);
+
+    //If first player is a bot player, play its card automatically.
+    CPUPlayer::NotifyPlayers();
 }
 
 void Round::NextPlayer()
 {
-    activePlayerIndex = (activePlayerIndex + 1) % players.size();
+    if (roundCards.size() == players.size()) {
+        DetermineRoundPoint(activePlayerIndex);
+    }
+    else {
+        activePlayerIndex = (activePlayerIndex + 1) % players.size();
+    }
     
-    if (!IsHumanPlayer())
+    if (!IsRoundOver() && !IsHumanPlayer())
     {
         //If next player is a bot player, play its card automatically.
         CPUPlayer::NotifyPlayers();
@@ -62,7 +72,8 @@ std::vector<Card> Round::TakeCardFromTopDeck(int numberOfCards)
     return hand;
 }
 
-int Round::DetermineWinnerTeam() {
+void Round::DetermineRoundPoint(int& playerIndex)
+{
     double highestStrength = 0;
     Player* winningPlayer = nullptr;
     CardStrengthCalculator strengthCalculator(vira);
@@ -77,11 +88,16 @@ int Round::DetermineWinnerTeam() {
 
     auto it = std::find_if(players.begin(), players.end(), [&winningPlayer](const std::unique_ptr<Player>& p) { return p.get() == winningPlayer; });
     if (it != players.end()) {
-        int playerIndex = std::distance(players.begin(), it);
-        return playerIndex % 2; // 0 is first team, 1 is second team
+        playerIndex = std::distance(players.begin(), it);
+        points[playerIndex % 2] += 1; // 0 is first team, 1 is second team
     }
 
-    return -1;
+    // After computing the point, the cards of the table are removed to 
+    roundCards.clear();
+}
+
+int Round::GetWinnerTeam() const {
+    return roundWinnerTeam;
 }
 
 void Round::RaiseBet()
@@ -98,7 +114,6 @@ void Round::PlayCard()
     Card playedCard = players[activePlayerIndex]->PlayCard();
     DefineWinningCard(playedCard);
     roundCards.push_back(std::make_pair(players[activePlayerIndex].get(), playedCard));
-    SetIsRoundOver(roundCards.size() == players.size());
 }
 
 
@@ -145,17 +160,22 @@ void Round::SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers)
     players = std::move(allPlayers);
 }
 
-bool Round::IsRoundOver() const
+bool Round::IsRoundOver() 
 {
-    return isRoundOver;
-}
+    auto it = std::max_element(points.begin(), points.end()); // iterator to the team with more points
+    int teamIndex = std::distance(points.begin(), it); // 0 is first team, 1 is second team
+    int teamPoints = *it;
 
-void Round::SetIsRoundOver(bool roundOver)
-{
-    isRoundOver = roundOver;
-    if (isRoundOver) {
+    if (teamPoints < 2) {
+        isRoundOver = false;
+    }
+    else {
+        roundWinnerTeam = teamIndex;
+        isRoundOver = true;
         RaiseRoundOverEvent();
     }
+
+    return isRoundOver;
 }
 
 int Round::GetCurrentBet()

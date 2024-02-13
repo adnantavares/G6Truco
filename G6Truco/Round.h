@@ -16,6 +16,8 @@ class CPUPlayer;
 
 class Round {
 private:
+    int roundWinnerTeam;
+    std::vector<int> points;
     Deck deck; // The deck of cards for the game
     std::array<std::unique_ptr<Player>, 4> players; // Pointers to the players in the round.
     std::vector<std::pair<Player*, Card>> roundCards; // Cards played in the round.
@@ -27,10 +29,11 @@ private:
     std::function<void()> roundOverEvent;
     std::vector<int> possibleBets;
 
+    void DetermineRoundPoint(int& playerIndex); // Determines the winner of the round point.
+
 public:
     Round();
     void PlayCard(); // Method for players(Humans or CPU) to play their cards.
-    int DetermineWinnerTeam(); // Determines the winner of the round.
     void RaiseBet(); // Raises the current bet (Truco, Seis, Nove, Doze).
     void DealCardsToPlayers();
     std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
@@ -46,9 +49,9 @@ public:
     const std::optional<std::pair<Player*, Card>> GetWinningCard();
     const std::array<std::unique_ptr<Player>, 4>& Round::GetAllPlayers() const;
     void SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers);
-    bool IsRoundOver() const;
-    void SetIsRoundOver(bool roundOver);
+    bool IsRoundOver();
     int GetCurrentBet();
+    int GetWinnerTeam() const; // Determines the winner of the round.
     void SetCurrentBet(int bet);
     bool IsHumanPlayer();
     bool IsHumanPlayer(Player* player);
