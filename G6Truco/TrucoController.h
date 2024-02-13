@@ -7,6 +7,8 @@
 
 class TrucoController {
 private:
+    const int NUMBER_OF_PLAYERS = 4;
+    int firstPlayer;
     Round round;
     std::function<void(Player*)> activePlayerChangedEvent;
     std::function<void(Round*)> roundInformationsChangedEvent;

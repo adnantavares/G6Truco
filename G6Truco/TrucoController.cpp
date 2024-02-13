@@ -3,17 +3,14 @@
 
 TrucoController::TrucoController()
 {
-	std::array<std::unique_ptr<Player>, 4> players;
+	firstPlayer = 0;
+	std::array<std::unique_ptr<Player>, 4/*NUMBER_OF_PLAYERS*/> players;
 
 	// Criação de jogadores humanos e CPUs.
-	players[0] = std::make_unique<HumanPlayer>();
-	players[0]->SetPlayerName(L"HUMAN-Pedro");
-	players[1] = std::make_unique<CPUPlayer>();
-	players[1]->SetPlayerName(L"BOT-Priscila");
-	players[2] = std::make_unique<HumanPlayer>();
-	players[2]->SetPlayerName(L"HUMAN-Adnan");
-	players[3] = std::make_unique<CPUPlayer>();
-	players[3]->SetPlayerName(L"BOT-Danilo");
+	players[0] = HumanPlayer::Create(L"HUMAN-Pedro");
+	players[1] = CPUPlayer::Create(L"BOT-Priscila", TrucoController::round);
+	players[2] = HumanPlayer::Create(L"HUMAN-Adnan");
+	players[3] = CPUPlayer::Create(L"BOT-Danilo", TrucoController::round);
 
 	TrucoController::round.SetPlayers(std::move(players));
 	TrucoController::round.RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
@@ -33,10 +30,9 @@ void TrucoController::RaiseBet()
 
 void TrucoController::StartGame() {
 
-	TrucoController::round.StartRound();
+	TrucoController::round.StartRound(firstPlayer);
 	RaiseActivePlayerChangedEvent(round.GetActivePlayer());
 	RaiseRoundInformationsChangedEvent(&round);
-
 }
 
 //True if player is a HumanPlayer
@@ -89,8 +85,10 @@ void TrucoController::HandleRoundOver()
 {
 	int winnerTeamIndex = TrucoController::round.DetermineWinnerTeam();
 	int currentBet = TrucoController::round.GetCurrentBet();
+	
 	//TODO: Check if has a game winner team, before start a new round
-	TrucoController::round.StartRound();
+	firstPlayer = (firstPlayer + 1) % NUMBER_OF_PLAYERS;
+	TrucoController::round.StartRound(firstPlayer);
 }
 #pragma endregion
 

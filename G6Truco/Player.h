@@ -14,7 +14,6 @@ protected:
     bool isHandHidden;
     std::function<void(Player*, int)> raiseBetCallback;
     CString playerName;
-    
 
 public:
     Player(PlayerType type);

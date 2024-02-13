@@ -10,6 +10,10 @@
 #include <optional>
 #include "CPUPlayer.h"
 
+// Forward Declaration
+class CPUPlayer;
+
+
 class Round {
 private:
     Deck deck; // The deck of cards for the game
@@ -31,7 +35,7 @@ public:
     void DealCardsToPlayers();
     std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
     void OnRaiseBet(Player* player, int bet);
-    void StartRound();
+    void StartRound(int firstPlayer);
     void NextPlayer();
     bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard);
 #pragma region Getters and Setters
@@ -39,6 +43,7 @@ public:
     Player* GetActivePlayer();
     Card GetViraCard();
     void SetViraCard(Card viraCard);
+    const std::optional<std::pair<Player*, Card>> GetWinningCard();
     const std::array<std::unique_ptr<Player>, 4>& Round::GetAllPlayers() const;
     void SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers);
     bool IsRoundOver() const;
@@ -46,6 +51,7 @@ public:
     int GetCurrentBet();
     void SetCurrentBet(int bet);
     bool IsHumanPlayer();
+    bool IsHumanPlayer(Player* player);
     void DefineWinningCard(Card playedCard);
     CPUPlayer* GetCPUActivePlayer(); //nullPtr if the active player is not a CPUPlayer
 #pragma endregion

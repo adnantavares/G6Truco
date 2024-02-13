@@ -3,6 +3,7 @@
 
 Round::Round()
 {
+    activePlayerIndex = 0;
     possibleBets = { 1, 3, 6, 9, 12 };
 }
 
@@ -10,7 +11,7 @@ void Round::OnRaiseBet(Player* player, int bet) {
     
 }
 
-void Round::StartRound() {
+void Round::StartRound(int firstPlayer) {
     currentBet = 1;
     winningCard.reset();
     roundCards.clear();
@@ -19,22 +20,19 @@ void Round::StartRound() {
 
     DealCardsToPlayers();
     SetViraCard(TakeCardFromTopDeck(1)[0]);
-    activePlayerIndex = 0;
+
+    activePlayerIndex = firstPlayer;
     SetIsRoundOver(false);
 }
 
 void Round::NextPlayer()
 {
     activePlayerIndex = (activePlayerIndex + 1) % players.size();
+    
     if (!IsHumanPlayer())
     {
         //If next player is a bot player, play its card automatically.
-        CPUPlayer* cpuPlayer = GetCPUActivePlayer();
-        cpuPlayer->SetWinningCard(winningCard); //Set winningCard in order to CPU player knows witch card to play
-        cpuPlayer->SetCurrentViraCard(GetViraCard());
-        PlayCard();
-        bool isRoundRestarted = activePlayerIndex == 0;
-        if (!isRoundRestarted) activePlayerIndex = (activePlayerIndex + 1) % players.size();
+        CPUPlayer::NotifyPlayers();
     }
 }
 
@@ -114,26 +112,44 @@ Player* Round::GetActivePlayer()
 {
     return players[GetActivePlayerIndex()].get();
 }
+
 Card Round::GetViraCard()
 {
     return vira;
 }
+
 void Round::SetViraCard(Card viraCard)
 {
     vira = viraCard;
+
+    for (auto& player : players) {
+        if (!IsHumanPlayer(player.get())) {
+            CPUPlayer* cpuPlayer = dynamic_cast<CPUPlayer*>(player.get());
+            cpuPlayer->SetCurrentViraCard(vira);
+        }
+    }
 }
+
+const std::optional<std::pair<Player*, Card>> Round::GetWinningCard()
+{
+    return winningCard;
+}
+
 const std::array<std::unique_ptr<Player>, 4>& Round::GetAllPlayers() const
 {
     return players;
 }
+
 void Round::SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers)
 {
     players = std::move(allPlayers);
 }
+
 bool Round::IsRoundOver() const
 {
     return isRoundOver;
 }
+
 void Round::SetIsRoundOver(bool roundOver)
 {
     isRoundOver = roundOver;
@@ -141,26 +157,36 @@ void Round::SetIsRoundOver(bool roundOver)
         RaiseRoundOverEvent();
     }
 }
+
 int Round::GetCurrentBet()
 {
     return currentBet;
 }
+
 void Round::SetCurrentBet(int bet)
 {
     currentBet = bet;
 }
+
 bool Round::IsHumanPlayer()
 {
     Player* activePlayer = GetActivePlayer();
-    HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(activePlayer);
+    return IsHumanPlayer(activePlayer);
+}
+
+bool Round::IsHumanPlayer(Player* player)
+{
+    HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(player);
     return humanPlayer != nullptr;
 }
+
 void Round::DefineWinningCard(Card playedCard)
 {
     if (!winningCard || NewCardIsStronger(playedCard, winningCard->second)) {
         winningCard = std::make_optional(std::make_pair(players[activePlayerIndex].get(), playedCard));
     }
 }
+
 CPUPlayer* Round::GetCPUActivePlayer()
 {
     Player* activePlayer = GetActivePlayer();
@@ -174,13 +200,13 @@ void Round::RoundOverEventListener(std::function<void()> callback)
 {
     roundOverEvent = callback;
 }
+
 void Round::RaiseRoundOverEvent()
 {
     if (roundOverEvent) {
         roundOverEvent();
     }
 }
-
 #pragma endregion
 
 
