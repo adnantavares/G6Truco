@@ -11,6 +11,7 @@
 #define BUTTONNEWGAMEID 10001
 #define BUTTONACCEPTTRUCOID 10002
 #define BUTTONREJECTTRUCOID 10003
+#define BUTTONPLAYCARDID 10004
 
 class CG6TrucoView : public CView
 {
@@ -49,6 +50,7 @@ private:
 	CButton buttonNewGame;
 	CButton buttonAcceptTruco;
 	CButton buttonRejectTruco;
+	CButton buttonPlayCard;
 
 	void CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton);
 	//CBitmap* pOldBack;
@@ -113,6 +115,7 @@ protected:
 protected:
 	void OnButtonTrucoClicked();
 	void OnButtonNewGameClicked();
+	void OnButtonPlayCardClicked();
 	DECLARE_MESSAGE_MAP()
 };
 

@@ -23,6 +23,7 @@ void TrucoController::PlayCard()
 {
 	TrucoController::round.PlayCard();
 	TrucoController::round.NextPlayer();
+	RaiseRoundInformationsChangedEvent(&round);
 }
 
 void TrucoController::RaiseBet()
