@@ -94,6 +94,9 @@ void Round::DetermineRoundPoint(int& playerIndex)
 
     // After computing the point, the cards of the table are removed to 
     roundCards.clear();
+    for (int p = 0; p < 4; p++) {
+        players.at(p).get()->RemoveSelectedCard();
+    }
 }
 
 int Round::GetWinnerTeam() const {

@@ -136,6 +136,18 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	UpdateButtons();
 }
 
+void CG6TrucoView::DrawPlayerCards(CDC* pDC, Player* p, int x, int y) {
+	for (int c = 0; c < p->GetHand().size(); c++) {
+		if (c == p->GetSelectCardIndex()) {
+			pDC->BitBlt(x, y, cardW, cardH, cardsMap[p->GetHand().at(c).GetSuit()][p->GetHand().at(c).GetRank()], 0, 0, SRCCOPY);
+		}
+		else {
+			pDC->BitBlt(x, y, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+		}
+		x += 60;
+	}
+}
+
 void CG6TrucoView::DrawCards(CDC* pDC) {
     std::vector<Player*> players;
 	for (int a = 0; a < 4; a++) {
@@ -146,35 +158,12 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 
 	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[currentRound->GetViraCard().GetSuit()][currentRound->GetViraCard().GetRank()], 0, 0, SRCCOPY);
 
-	if (players.at(1)->GetHand().size() >= 1) {
-		pDC->BitBlt(40, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(0).GetSuit()][players.at(1)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		if (players.at(1)->GetHand().size() >= 2) {
-			pDC->BitBlt(100, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(1).GetSuit()][players.at(1)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-			if (players.at(1)->GetHand().size() >= 3) {
-				pDC->BitBlt(160, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(2).GetSuit()][players.at(1)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-			}
-		}
-	}
+	DrawPlayerCards(pDC, players.at(1), 40, 350);
 
-	if (players.at(2)->GetHand().size() >= 1) {
-		pDC->BitBlt(800, 10, cardW, cardH, cardsMap[players.at(2)->GetHand().at(0).GetSuit()][players.at(2)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		if (players.at(2)->GetHand().size() >= 2) {
-			pDC->BitBlt(860, 10, cardW, cardH, cardsMap[players.at(2)->GetHand().at(1).GetSuit()][players.at(2)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-			if (players.at(2)->GetHand().size() >= 3) {
-				pDC->BitBlt(920, 10, cardW, cardH, cardsMap[players.at(2)->GetHand().at(2).GetSuit()][players.at(2)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-			}
-		}
-	}
+	DrawPlayerCards(pDC, players.at(2), 800, 10);
 
-	if (players.at(3)->GetHand().size() >= 1) {
-		pDC->BitBlt(1600, 350, cardW, cardH, cardsMap[players.at(3)->GetHand().at(0).GetSuit()][players.at(3)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		if (players.at(3)->GetHand().size() >= 2) {
-			pDC->BitBlt(1660, 350, cardW, cardH, cardsMap[players.at(3)->GetHand().at(1).GetSuit()][players.at(3)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-			if (players.at(3)->GetHand().size() >= 3) {
-				pDC->BitBlt(1720, 350, cardW, cardH, cardsMap[players.at(3)->GetHand().at(2).GetSuit()][players.at(3)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-			}
-		}
-	}
+	DrawPlayerCards(pDC, players.at(3), 1600, 350);
+
 
 	if (players.at(0)->GetHand().size() >= 1) {
 		if (cardClicked == 1) {

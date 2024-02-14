@@ -59,6 +59,7 @@ private:
 	//CBitmap* pOldCard3;
 	//CBitmap* pOldBmpDeck;
 	void DrawCards(CDC* pDC);
+	void DrawPlayerCards(CDC* pDC, Player* p, int x, int y);
 	void UpdateButtons();
 	void SetStatusBarText(const CString& strText);
 	const std::string cardsNameMap[4][10] = { 
