@@ -4,6 +4,7 @@
 
 #include "pch.h"
 #include "framework.h"
+#include <vector>
 #include <algorithm>
 
 // SHARED_HANDLERS can be defined in an ATL project implementing preview, thumbnail
@@ -153,83 +154,85 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
-	Player* p1 = currentRound->GetAllPlayers().at(0).get();
-	Player* p2 = currentRound->GetAllPlayers().at(1).get();
-	Player* p3 = currentRound->GetAllPlayers().at(2).get();
-	Player* p4 = currentRound->GetAllPlayers().at(3).get();
+    std::vector<Player*> players;
+	for (int a = 0; a < 4; a++) {
+		players.push_back(currentRound->GetAllPlayers().at(a).get());
+	}
+	int n = currentRound->GetActivePlayerIndex();
+	std::rotate(players.begin(), players.begin() + n, players.end());
 
 	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[3][4], 0, 0, SRCCOPY);
 
-	if (p3->GetHand().size() >= 1) {
-		pDC->BitBlt(800, 10, cardW, cardH, cardsMap[p3->GetHand().at(0).GetSuit()][p3->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		if (p3->GetHand().size() >= 2) {
-			pDC->BitBlt(860, 10, cardW, cardH, cardsMap[p3->GetHand().at(1).GetSuit()][p3->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-			if (p3->GetHand().size() >= 3) {
-				pDC->BitBlt(920, 10, cardW, cardH, cardsMap[p3->GetHand().at(2).GetSuit()][p3->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-			}
-		}
-	}
-	
-	if (p2->GetHand().size() >= 1) {
-		pDC->BitBlt(40, 350, cardW, cardH, cardsMap[p2->GetHand().at(0).GetSuit()][p2->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		if (p2->GetHand().size() >= 2) {
-			pDC->BitBlt(100, 350, cardW, cardH, cardsMap[p2->GetHand().at(1).GetSuit()][p2->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-			if (p2->GetHand().size() >= 3) {
-				pDC->BitBlt(160, 350, cardW, cardH, cardsMap[p2->GetHand().at(2).GetSuit()][p2->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+	if (players.at(1)->GetHand().size() >= 1) {
+		pDC->BitBlt(40, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(0).GetSuit()][players.at(1)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+		if (players.at(1)->GetHand().size() >= 2) {
+			pDC->BitBlt(100, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(1).GetSuit()][players.at(1)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
+			if (players.at(1)->GetHand().size() >= 3) {
+				pDC->BitBlt(160, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(2).GetSuit()][players.at(1)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 			}
 		}
 	}
 
-	if (p4->GetHand().size() >= 1) {
-		pDC->BitBlt(1600, 350, cardW, cardH, cardsMap[p4->GetHand().at(0).GetSuit()][p4->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-		if (p4->GetHand().size() >= 2) {
-			pDC->BitBlt(1660, 350, cardW, cardH, cardsMap[p4->GetHand().at(1).GetSuit()][p4->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-			if (p4->GetHand().size() >= 3) {
-				pDC->BitBlt(1720, 350, cardW, cardH, cardsMap[p4->GetHand().at(2).GetSuit()][p4->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+	if (players.at(2)->GetHand().size() >= 1) {
+		pDC->BitBlt(800, 10, cardW, cardH, cardsMap[players.at(2)->GetHand().at(0).GetSuit()][players.at(2)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+		if (players.at(2)->GetHand().size() >= 2) {
+			pDC->BitBlt(860, 10, cardW, cardH, cardsMap[players.at(2)->GetHand().at(1).GetSuit()][players.at(2)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
+			if (players.at(2)->GetHand().size() >= 3) {
+				pDC->BitBlt(920, 10, cardW, cardH, cardsMap[players.at(2)->GetHand().at(2).GetSuit()][players.at(2)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 			}
 		}
 	}
 
-	if (p1->GetHand().size() >= 1) {
+	if (players.at(3)->GetHand().size() >= 1) {
+		pDC->BitBlt(1600, 350, cardW, cardH, cardsMap[players.at(3)->GetHand().at(0).GetSuit()][players.at(3)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+		if (players.at(3)->GetHand().size() >= 2) {
+			pDC->BitBlt(1660, 350, cardW, cardH, cardsMap[players.at(3)->GetHand().at(1).GetSuit()][players.at(3)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
+			if (players.at(3)->GetHand().size() >= 3) {
+				pDC->BitBlt(1720, 350, cardW, cardH, cardsMap[players.at(3)->GetHand().at(2).GetSuit()][players.at(3)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+			}
+		}
+	}
+
+	if (players.at(0)->GetHand().size() >= 1) {
 		if (cardClicked == 1) {
 			if (hideCard) {
 				pDC->BitBlt(800, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 			}
 			else {
-				pDC->BitBlt(800, 620, cardW, cardH, cardsMap[p1->GetHand().at(0).GetSuit()][p1->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+				pDC->BitBlt(800, 620, cardW, cardH, cardsMap[players.at(0)->GetHand().at(0).GetSuit()][players.at(0)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
 			}
 			m_Card1Rect = CRect(800, 620, 800 + cardW, 620 + cardH);
 		}
 		else {
-			pDC->BitBlt(800, 650, cardW, cardH, cardsMap[p1->GetHand().at(0).GetSuit()][p1->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
+			pDC->BitBlt(800, 650, cardW, cardH, cardsMap[players.at(0)->GetHand().at(0).GetSuit()][players.at(0)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
 			m_Card1Rect = CRect(800, 650, 800 + cardW, 650 + cardH);
 		}
-		if (p1->GetHand().size() >= 2) {
+		if (players.at(0)->GetHand().size() >= 2) {
 			if (cardClicked == 2) {
 				if (hideCard) {
 					pDC->BitBlt(860, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 				}
 				else {
-					pDC->BitBlt(860, 620, cardW, cardH, cardsMap[p1->GetHand().at(1).GetSuit()][p1->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
+					pDC->BitBlt(860, 620, cardW, cardH, cardsMap[players.at(0)->GetHand().at(1).GetSuit()][players.at(0)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
 				}
 				m_Card2Rect = CRect(860, 620, 860 + cardW, 620 + cardH);
 			}
 			else {
-				pDC->BitBlt(860, 650, cardW, cardH, cardsMap[p1->GetHand().at(1).GetSuit()][p1->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
+				pDC->BitBlt(860, 650, cardW, cardH, cardsMap[players.at(0)->GetHand().at(1).GetSuit()][players.at(0)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
 				m_Card2Rect = CRect(860, 650, 860 + cardW, 650 + cardH);
 			}
-			if (p1->GetHand().size() >= 3) {
+			if (players.at(0)->GetHand().size() >= 3) {
 				if (cardClicked == 3) {
 					if (hideCard) {
 						pDC->BitBlt(920, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
 					}
 					else {
-						pDC->BitBlt(920, 620, cardW, cardH, cardsMap[p1->GetHand().at(2).GetSuit()][p1->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+						pDC->BitBlt(920, 620, cardW, cardH, cardsMap[players.at(0)->GetHand().at(2).GetSuit()][players.at(0)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 					}
 					m_Card3Rect = CRect(920, 620, 920 + cardW, 620 + cardH);
 				}
 				else {
-					pDC->BitBlt(920, 650, cardW, cardH, cardsMap[p1->GetHand().at(2).GetSuit()][p1->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
+					pDC->BitBlt(920, 650, cardW, cardH, cardsMap[players.at(0)->GetHand().at(2).GetSuit()][players.at(0)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
 					m_Card3Rect = CRect(920, 650, 920 + cardW, 650 + cardH);
 				}
 			}
@@ -360,8 +363,13 @@ void CG6TrucoView::OnButtonNewGameClicked()
 
 void CG6TrucoView::OnButtonPlayCardClicked()
 {
-	SetStatusBarText(L"Play Card Button Clicked");
-	TryPlayCard(cardClicked-1);
+	if (cardClicked >= 1) {
+		TryPlayCard(cardClicked - 1);
+		cardClicked = 0;
+	}
+	else {
+		SetStatusBarText(L"No Card Selected");
+	}
 }
 
 void CG6TrucoView::SetStatusBarText(const CString& strText) {
