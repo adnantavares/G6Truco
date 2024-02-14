@@ -44,6 +44,8 @@ void Round::NextPlayer()
         //If next player is a bot player, play its card automatically.
         CPUPlayer::NotifyPlayers();
     }
+
+    RaiseRoundInformationChangedEvent();
 }
 
 bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard)
@@ -227,6 +229,19 @@ void Round::RaiseRoundOverEvent()
         roundOverEvent();
     }
 }
+
+void Round::RoundInformationChangedListener(std::function<void(Round*)> callback)
+{
+    roundInformationChangedEvent = callback;
+}
+
+void Round::RaiseRoundInformationChangedEvent()
+{
+    if (roundInformationChangedEvent) {
+        roundInformationChangedEvent(this);
+    }
+}
+
 #pragma endregion
 
 

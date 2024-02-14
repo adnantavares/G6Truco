@@ -6,45 +6,46 @@ TrucoController::TrucoController()
 	firstPlayer = 0;
 	std::array<std::unique_ptr<Player>, 4/*NUMBER_OF_PLAYERS*/> players;
 
+	round = std::make_unique<Round>();
+
 	// Criação de jogadores humanos e CPUs.
 	players[0] = HumanPlayer::Create(L"HUMAN-Pedro");
-	players[1] = CPUPlayer::Create(L"BOT-Priscila", TrucoController::round, &roundInformationsChangedEvent);
+	players[1] = CPUPlayer::Create(L"BOT-Priscila", round.get());
 	players[2] = HumanPlayer::Create(L"HUMAN-Adnan");
-	players[3] = CPUPlayer::Create(L"BOT-Danilo", TrucoController::round, &roundInformationsChangedEvent);
+	players[3] = CPUPlayer::Create(L"BOT-Danilo", round.get());
 
-	TrucoController::round.SetPlayers(std::move(players));
-	TrucoController::round.RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
+	round->SetPlayers(std::move(players));
+	round->RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
 }
 
 void TrucoController::PlayCard()
 {
-	TrucoController::round.PlayCard();
-	TrucoController::round.NextPlayer();
-	RaiseRoundInformationsChangedEvent(&round);
+	round->PlayCard();
+	round->NextPlayer();
 }
 
 void TrucoController::RaiseBet()
 {
-	TrucoController::round.RaiseBet();
+	round->RaiseBet();
 }
 
 void TrucoController::StartGame() {
 
-	TrucoController::round.StartRound(firstPlayer);
-	RaiseActivePlayerChangedEvent(round.GetActivePlayer());
-	RaiseRoundInformationsChangedEvent(&round);
+	round->StartRound(firstPlayer);
+	RaiseActivePlayerChangedEvent(round->GetActivePlayer());
+	RaiseRoundInformationChangedEvent(round.get());
 }
 
 //True if player is a HumanPlayer
 bool TrucoController::IsActivePlayerHuman()
 {
-	return round.IsHumanPlayer();
+	return round->IsHumanPlayer();
 }
 
 bool TrucoController::TrySetSelectedCardIndex(int index)
 {
 	if (IsActivePlayerHuman()) {
-		auto* humanPlayer = dynamic_cast<HumanPlayer*>(round.GetActivePlayer());
+		auto* humanPlayer = dynamic_cast<HumanPlayer*>(round->GetActivePlayer());
 		if (humanPlayer) {
 			humanPlayer->SetSelectCardIndex(index);
 			return true;
@@ -54,13 +55,14 @@ bool TrucoController::TrySetSelectedCardIndex(int index)
 }
 
 #pragma region Set events
-void TrucoController::ActivePlayerChangedEvent(std::function<void(Player*)> callback) {
+void TrucoController::ActivePlayerChangedEventListener(std::function<void(Player*)> callback) {
 	activePlayerChangedEvent = callback;
 }
 
-void TrucoController::RoundInformationsChangedEvent(std::function<void(Round*)> callback)
+void TrucoController::RoundInformationChangedEventListener(std::function<void(Round*)> callback)
 {
 	roundInformationsChangedEvent = callback;
+	round->RoundInformationChangedListener(roundInformationsChangedEvent);
 }
 #pragma endregion
 
@@ -72,7 +74,7 @@ void TrucoController::RaiseActivePlayerChangedEvent(Player* currentPlayer)
 	}
 }
 
-void TrucoController::RaiseRoundInformationsChangedEvent(Round* currentRoundInformations)
+void TrucoController::RaiseRoundInformationChangedEvent(Round* currentRoundInformations)
 {
 	if (roundInformationsChangedEvent) {
 		roundInformationsChangedEvent(currentRoundInformations);
@@ -83,12 +85,12 @@ void TrucoController::RaiseRoundInformationsChangedEvent(Round* currentRoundInfo
 #pragma region Event listeners
 void TrucoController::HandleRoundOver()
 {
-	int winnerTeamIndex = TrucoController::round.GetWinnerTeam();
-	int currentBet = TrucoController::round.GetCurrentBet();
+	int winnerTeamIndex = round->GetWinnerTeam();
+	int currentBet = round->GetCurrentBet();
 	
 	//TODO: Check if has a game winner team, before start a new round
 	firstPlayer = (firstPlayer + 1) % NUMBER_OF_PLAYERS;
-	TrucoController::round.StartRound(firstPlayer);
+	round->StartRound(firstPlayer);
 }
 #pragma endregion
 

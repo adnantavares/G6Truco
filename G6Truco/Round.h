@@ -26,6 +26,7 @@ private:
     int currentBet; // The current bet (1, 3, 6, 9, 12).
     int activePlayerIndex;
     bool isRoundOver;
+    std::function<void(Round*)> roundInformationChangedEvent;
     std::function<void()> roundOverEvent;
     std::vector<int> possibleBets;
 
@@ -62,6 +63,9 @@ public:
 #pragma region Events
     void RoundOverEventListener(std::function<void()> callback);
     void RaiseRoundOverEvent();
+
+    void RoundInformationChangedListener(std::function<void(Round*)> callback);
+    void RaiseRoundInformationChangedEvent();
 #pragma endregion
 };
 

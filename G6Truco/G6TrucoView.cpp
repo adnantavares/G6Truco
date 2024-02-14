@@ -69,8 +69,8 @@ CG6TrucoView::CG6TrucoView() noexcept
 	}
 
 #pragma region Setting events
-	controller.ActivePlayerChangedEvent(std::bind(&CG6TrucoView::OnActivePlayerChangedEvent, this, std::placeholders::_1));
-	controller.RoundInformationsChangedEvent(std::bind(&CG6TrucoView::OnRoundInformationsChangedEvent, this, std::placeholders::_1));
+	controller.ActivePlayerChangedEventListener(std::bind(&CG6TrucoView::OnActivePlayerChangedEvent, this, std::placeholders::_1));
+	controller.RoundInformationChangedEventListener(std::bind(&CG6TrucoView::OnRoundInformationsChangedEvent, this, std::placeholders::_1));
 #pragma endregion
 
 }

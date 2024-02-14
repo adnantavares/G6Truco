@@ -11,10 +11,10 @@ CPUPlayer::CPUPlayer(const CString& name) : Player(PlayerType::Cpu)
 	SetPlayerName(name);
 }
 
-std::unique_ptr<CPUPlayer> CPUPlayer::Create(const CString& name, Round& round, std::function<void(Round*)>* callback)
+std::unique_ptr<CPUPlayer> CPUPlayer::Create(const CString& name, Round* round)
 {
 	std::unique_ptr<CPUPlayer> player = std::unique_ptr<CPUPlayer>(new CPUPlayer(name));
-	player->MonitorRoundState(round, callback);
+	player->MonitorRoundState(round);
 
 	return std::move(player);
 }
@@ -92,29 +92,26 @@ std::optional<Card> CPUPlayer::FindStrongerCard(const Card& targetCard) const
 	}
 }
 
-void CPUPlayer::MonitorRoundState(Round& round, std::function<void(Round*)>* callback)
+void CPUPlayer::MonitorRoundState(Round* round)
 {
 	// Bot player keeps monitoring the round in order to play when it is its turn
-	std::thread activePlayerThread([this, &round, callback]() {
+	std::thread activePlayerThread([this, round]() {
 		std::unique_lock l(playerMutex);
 
 		while (true)
 		{
-			CPUPlayer* cpuPlayer = round.GetCPUActivePlayer();
+			CPUPlayer* cpuPlayer = round->GetCPUActivePlayer();
 
 			//If next player is this bot player, play its card automatically.
 			if (cpuPlayer != nullptr && cpuPlayer->GetPlayerName() == this->GetPlayerName())
 			{
-				this->SetWinningCard(round.GetWinningCard()); //Set winningCard in order to CPU player knows witch card to play
+				this->SetWinningCard(round->GetWinningCard()); //Set winningCard in order to CPU player knows witch card to play
 				
 				// Waits Human Player card being invalidated, before playing CPU Player card
 				std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(PLAY_INTERVAL));
 				
-				round.PlayCard();
-				round.NextPlayer();
-				if (callback != nullptr) {
-					(*callback)(&round);
-				}
+				round->PlayCard();
+				round->NextPlayer();
 			}
 			
 			playerConditionVariable.wait(l);

@@ -9,7 +9,7 @@ class TrucoController {
 private:
     const int NUMBER_OF_PLAYERS = 4;
     int firstPlayer;
-    Round round;
+    std::unique_ptr<Round> round;
     std::function<void(Player*)> activePlayerChangedEvent;
     std::function<void(Round*)> roundInformationsChangedEvent;
 
@@ -23,10 +23,10 @@ public:
 
 #pragma region Events
 #pragma region Round events
-    void ActivePlayerChangedEvent(std::function<void(Player*)> callback);
+    void ActivePlayerChangedEventListener(std::function<void(Player*)> callback);
     void RaiseActivePlayerChangedEvent(Player* currentPlayer);
-    void RoundInformationsChangedEvent(std::function<void(Round*)> callback);
-    void RaiseRoundInformationsChangedEvent(Round* currentRoundInformations);
+    void RoundInformationChangedEventListener(std::function<void(Round*)> callback);
+    void RaiseRoundInformationChangedEvent(Round* currentRoundInformations);
     void HandleRoundOver();
 #pragma endregion
 
