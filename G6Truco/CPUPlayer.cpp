@@ -98,6 +98,7 @@ void CPUPlayer::MonitorRoundState(Round* round)
 	// Bot player keeps monitoring the round in order to play when it is its turn
 	std::thread activePlayerThread([this, round]() {
 		std::unique_lock l(playerMutex);
+		std::deque<std::thread> workerThread;
 
 		while (true)
 		{
@@ -111,11 +112,20 @@ void CPUPlayer::MonitorRoundState(Round* round)
 				// Waits Human Player card being invalidated, before playing CPU Player card
 				std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(PLAY_INTERVAL));
 				
-				round->PlayCard();
-				round->NextPlayer();
+				// Thread to perform playing action is necessary to avoid dead lock issues when a BOT player has to play 2 times straight
+				workerThread.emplace_back([round]() {
+					round->PlayCard();
+					round->NextPlayer();
+				});
 			}
 			
 			playerConditionVariable.wait(l);
+
+			if (workerThread.size() > 0)
+			{
+				workerThread.front().join();
+				workerThread.pop_front();
+			}
 		}
 	});
 
