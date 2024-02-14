@@ -26,7 +26,7 @@ private:
     CPUPlayer(const CString& name);
 
 public:
-    static std::unique_ptr<CPUPlayer> Create(const CString& name, Round& round);
+    static std::unique_ptr<CPUPlayer> Create(const CString& name, Round& round, std::function<void(Round*)>* callback);
     static void NotifyPlayers();
 
     Card PlayCard() override;
@@ -37,5 +37,5 @@ private:
     Card PlaySelectedCard(const Card& cardToPlay);
     Card CPUPlayer::FindWeakestCard() const;
     std::optional<Card> CPUPlayer::FindStrongerCard(const Card& targetCard) const;
-    void MonitorRoundState(Round& round);
+    void MonitorRoundState(Round& round, std::function<void(Round*)>* callback);
 };

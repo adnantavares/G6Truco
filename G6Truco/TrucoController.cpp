@@ -8,9 +8,9 @@ TrucoController::TrucoController()
 
 	// Criação de jogadores humanos e CPUs.
 	players[0] = HumanPlayer::Create(L"HUMAN-Pedro");
-	players[1] = CPUPlayer::Create(L"BOT-Priscila", TrucoController::round);
+	players[1] = CPUPlayer::Create(L"BOT-Priscila", TrucoController::round, &roundInformationsChangedEvent);
 	players[2] = HumanPlayer::Create(L"HUMAN-Adnan");
-	players[3] = CPUPlayer::Create(L"BOT-Danilo", TrucoController::round);
+	players[3] = CPUPlayer::Create(L"BOT-Danilo", TrucoController::round, &roundInformationsChangedEvent);
 
 	TrucoController::round.SetPlayers(std::move(players));
 	TrucoController::round.RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));

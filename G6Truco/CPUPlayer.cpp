@@ -11,10 +11,10 @@ CPUPlayer::CPUPlayer(const CString& name) : Player(PlayerType::Cpu)
 	SetPlayerName(name);
 }
 
-std::unique_ptr<CPUPlayer> CPUPlayer::Create(const CString& name, Round& round)
+std::unique_ptr<CPUPlayer> CPUPlayer::Create(const CString& name, Round& round, std::function<void(Round*)>* callback)
 {
 	std::unique_ptr<CPUPlayer> player = std::unique_ptr<CPUPlayer>(new CPUPlayer(name));
-	player->MonitorRoundState(round);
+	player->MonitorRoundState(round, callback);
 
 	return std::move(player);
 }
@@ -92,10 +92,10 @@ std::optional<Card> CPUPlayer::FindStrongerCard(const Card& targetCard) const
 	}
 }
 
-void CPUPlayer::MonitorRoundState(Round& round)
+void CPUPlayer::MonitorRoundState(Round& round, std::function<void(Round*)>* callback)
 {
 	// Bot player keeps monitoring the round in order to play when it is its turn
-	std::thread activePlayerThread([this, &round]() {
+	std::thread activePlayerThread([this, &round, callback]() {
 		std::unique_lock l(playerMutex);
 
 		while (true)
@@ -112,6 +112,9 @@ void CPUPlayer::MonitorRoundState(Round& round)
 				
 				round.PlayCard();
 				round.NextPlayer();
+				if (callback != nullptr) {
+					(*callback)(&round);
+				}
 			}
 			
 			playerConditionVariable.wait(l);
