@@ -215,7 +215,11 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 
 void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (m_Card3Rect.PtInRect(point))
+	if (!currentRound->IsHumanPlayer()) {
+		return;
+	}
+	Player* p = currentRound->GetActivePlayer();
+	if (m_Card3Rect.PtInRect(point) && p->GetHand().size() >= 3)
 	{
 		if (cardClicked == 3) {
 			cardClicked = 0;
@@ -227,7 +231,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 		SetStatusBarText(L"Card 3 Clicked");
 		Invalidate();
 	}
-	else if (m_Card2Rect.PtInRect(point)) {
+	else if (m_Card2Rect.PtInRect(point) && p->GetHand().size() >= 2) {
 		if (cardClicked ==2) {
 			cardClicked = 0;
 		}
@@ -238,7 +242,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 		SetStatusBarText(L"Card 2 Clicked");
 		Invalidate();
 	}
-	else if (m_Card1Rect.PtInRect(point)) {
+	else if (m_Card1Rect.PtInRect(point) && p->GetHand().size() >= 1) {
 		if (cardClicked == 1) {
 			cardClicked = 0;
 		}
@@ -260,18 +264,22 @@ void CG6TrucoView::TryPlayCard(int cardIndex)
 
 void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	if (m_Card3Rect.PtInRect(point))
+	if (!currentRound->IsHumanPlayer()) {
+		return;
+	}
+	Player* p = currentRound->GetActivePlayer();
+	if (m_Card3Rect.PtInRect(point) && p->GetHand().size() >= 3)
 	{
 		cardClicked = 3;
 		hideCard = true;
 		Invalidate();
 	}
-	else if (m_Card2Rect.PtInRect(point)) {
+	else if (m_Card2Rect.PtInRect(point) && p->GetHand().size() >= 2) {
 		cardClicked = 2;
 		hideCard = true;
 		Invalidate();
 	}
-	else if (m_Card1Rect.PtInRect(point)) {
+	else if (m_Card1Rect.PtInRect(point) && p->GetHand().size() >= 1) {
 		cardClicked = 1;
 		hideCard = true;
 		Invalidate();
