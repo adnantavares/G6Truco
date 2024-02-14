@@ -33,7 +33,6 @@ void TrucoController::StartGame() {
 
 	round->StartRound(firstPlayer);
 	RaiseActivePlayerChangedEvent(round->GetActivePlayer());
-	RaiseRoundInformationChangedEvent(round.get());
 }
 
 //True if player is a HumanPlayer
@@ -61,8 +60,7 @@ void TrucoController::ActivePlayerChangedEventListener(std::function<void(Player
 
 void TrucoController::RoundInformationChangedEventListener(std::function<void(Round*)> callback)
 {
-	roundInformationsChangedEvent = callback;
-	round->RoundInformationChangedListener(roundInformationsChangedEvent);
+	round->RoundInformationChangedListener(callback);
 }
 #pragma endregion
 
@@ -71,13 +69,6 @@ void TrucoController::RaiseActivePlayerChangedEvent(Player* currentPlayer)
 {
 	if (activePlayerChangedEvent) {
 		activePlayerChangedEvent(currentPlayer);
-	}
-}
-
-void TrucoController::RaiseRoundInformationChangedEvent(Round* currentRoundInformations)
-{
-	if (roundInformationsChangedEvent) {
-		roundInformationsChangedEvent(currentRoundInformations);
 	}
 }
 #pragma endregion

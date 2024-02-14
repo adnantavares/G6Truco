@@ -11,7 +11,9 @@ private:
     int firstPlayer;
     std::unique_ptr<Round> round;
     std::function<void(Player*)> activePlayerChangedEvent;
-    std::function<void(Round*)> roundInformationsChangedEvent;
+
+    void RaiseActivePlayerChangedEvent(Player* currentPlayer);
+    void HandleRoundOver();
 
 public:
     TrucoController();
@@ -22,12 +24,9 @@ public:
     bool TrySetSelectedCardIndex(int index);
 
 #pragma region Events
-#pragma region Round events
+#pragma region Round event listeners
     void ActivePlayerChangedEventListener(std::function<void(Player*)> callback);
-    void RaiseActivePlayerChangedEvent(Player* currentPlayer);
     void RoundInformationChangedEventListener(std::function<void(Round*)> callback);
-    void RaiseRoundInformationChangedEvent(Round* currentRoundInformations);
-    void HandleRoundOver();
 #pragma endregion
 
 #pragma endregion

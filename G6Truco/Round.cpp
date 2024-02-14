@@ -26,8 +26,12 @@ void Round::StartRound(int firstPlayer) {
     roundWinnerTeam = -1;
     points = std::vector(2, 0);
 
-    //If first player is a bot player, play its card automatically.
-    CPUPlayer::NotifyPlayers();
+    RaiseRoundInformationChangedEvent();
+
+    if (!IsHumanPlayer()) {
+        //If first player is a bot player, play its card automatically.
+        CPUPlayer::NotifyPlayers();
+    }
 }
 
 void Round::NextPlayer()
