@@ -159,12 +159,15 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[currentRound->GetViraCard().GetSuit()][currentRound->GetViraCard().GetRank()], 0, 0, SRCCOPY);
 
 	DrawPlayerCards(pDC, players.at(1), 40, 350);
+	pDC->TextOut(140, 600, players.at(1)->GetPlayerName());
 
 	DrawPlayerCards(pDC, players.at(2), 800, 10);
+	pDC->TextOut(880, 260, players.at(2)->GetPlayerName());
 
 	DrawPlayerCards(pDC, players.at(3), 1600, 350);
+	pDC->TextOut(1700, 600, players.at(3)->GetPlayerName());
 
-
+	pDC->TextOut(880, 900, players.at(0)->GetPlayerName());
 	if (players.at(0)->GetHand().size() >= 1) {
 		if (cardClicked == 1) {
 			if (hideCard) {
