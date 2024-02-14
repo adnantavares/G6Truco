@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CAboutDlg" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="CAboutDlg::__unnamed_enum_040a_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>G6Truco.cpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>G6Truco.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Card" Collapsed="true">
+    <Position X="2.5" Y="1.5" Width="1.75" />
+    <NestedTypes>
+      <Enum Name="Card::Suit" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Card.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Card::Rank" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Card.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEBAAAAAAQAAQAAAAQAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Card.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CardStrengthCalculator" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>gIAAAAAAAIAAAAAABCAAAAAAAAAAAAAAAEAAAAQAAAA=</HashCode>
+      <FileName>CardStrengthCalculator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CPUPlayer" Collapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAQgAgIAAAICAAAAAAAAAEAiDAAAEAAACAA=</HashCode>
+      <FileName>CPUPlayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Deck" Collapsed="true">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABABAAAAAAAAgAAAAgAgAAAAAAAAAAAAABAAAACEAA=</HashCode>
+      <FileName>Deck.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CG6TrucoApp" Collapsed="true">
+    <Position X="7.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAA=</HashCode>
+      <FileName>G6Truco.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CG6TrucoDoc" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAACAAEgAAgASggAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>G6TrucoDoc.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CG6TrucoView">
+    <Position X="3.5" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>EDSYBACQAIiAkCMgHgh64QMUkAgEQAQAQgkAAYAQAAI=</HashCode>
+      <FileName>G6TrucoView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Game" Collapsed="true">
+    <Position X="5.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HumanPlayer" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAABEAAAAAAEAAAAAQ=</HashCode>
+      <FileName>HumanPlayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrucoController">
+    <Position X="6.75" Y="3.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAUAAAAAAAEAAgEgAAEAAAAAAoBBkIAAAAA=</HashCode>
+      <FileName>TrucoController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMainFrame" Collapsed="true">
+    <Position X="3" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAQiAAAgCAAAgAAAAAAAAAAABA=</HashCode>
+      <FileName>MainFrm.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.75" />
+    <NestedTypes>
+      <Enum Name="Player::PlayerType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Player.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgEAEAAQIAAAACIAAAAAAgEWAACBA=</HashCode>
+      <FileName>Player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Round">
+    <Position X="0.5" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAKAAKBoAIBAYAAEACAAIYACoIAYEIEIOBAEBIACAA=</HashCode>
+      <FileName>Round.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
