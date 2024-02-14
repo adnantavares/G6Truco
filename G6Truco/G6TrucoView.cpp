@@ -53,10 +53,6 @@ CG6TrucoView::CG6TrucoView() noexcept
 	bmpDeck.Attach(imageDeck.Detach());
 	CBitmap* pOldBmpDeck = memDCDeck.SelectObject(&bmpDeck);
 
-	//memDCCard1.CreateCompatibleDC(NULL);
-	//memDCCard2.CreateCompatibleDC(NULL);
-	//memDCCard3.CreateCompatibleDC(NULL);
-
 	//Initialize Image Matrix will all Deck
 	for (int a = 0; a < 4; a++) {
 		for (int b = 0; b < 10; b++) {
@@ -131,25 +127,12 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	GetClientRect(&rect);
 	pDC->FillRect(&rect, &backgroundBrush);
 
-	// How to load a bitmap from resources
-	//CBitmap bmpBack;
-	//if (!bmpBack.LoadBitmap(IDB_BACK_CARD))
-	//{
-	//	// Falha ao carregar o bitmap
-	//}
-	//CDC memDCBack;
-	//memDCBack.CreateCompatibleDC(NULL);
-	//CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
-
 	if (start) {
 		DrawCards(pDC);
 	}
 
 	pDC->BitBlt(820, 400, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
 
-	//bmpCard1.DeleteObject();
-	//bmpCard2.DeleteObject();
-	//bmpCard3.DeleteObject();
 	UpdateButtons();
 }
 
@@ -161,7 +144,7 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 	int n = currentRound->GetActivePlayerIndex();
 	std::rotate(players.begin(), players.begin() + n, players.end());
 
-	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[3][4], 0, 0, SRCCOPY);
+	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[currentRound->GetViraCard().GetSuit()][currentRound->GetViraCard().GetRank()], 0, 0, SRCCOPY);
 
 	if (players.at(1)->GetHand().size() >= 1) {
 		pDC->BitBlt(40, 350, cardW, cardH, cardsMap[players.at(1)->GetHand().at(0).GetSuit()][players.at(1)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
@@ -252,7 +235,6 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 3;
 		}
 		hideCard = false;
-		//TryPlayCard(2);
 		SetStatusBarText(L"Card 3 Clicked");
 		Invalidate();
 	}
@@ -264,7 +246,6 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 2;
 		}
 		hideCard = false;
-		//TryPlayCard(1);
 		SetStatusBarText(L"Card 2 Clicked");
 		Invalidate();
 	}
@@ -276,7 +257,6 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 1;
 		}
 		hideCard = false;
-		//TryPlayCard(0);
 		SetStatusBarText(L"Card 1 Clicked");
 		Invalidate();
 	}
