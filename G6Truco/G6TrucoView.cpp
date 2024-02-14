@@ -333,10 +333,18 @@ void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rect
 void CG6TrucoView::UpdateButtons() {
 	if (start) {
 		buttonNewGame.ShowWindow(SW_HIDE);
-		buttonTruco.ShowWindow(SW_SHOW);
-		buttonAcceptTruco.ShowWindow(SW_SHOW);
-		buttonRejectTruco.ShowWindow(SW_SHOW);
-		buttonPlayCard.ShowWindow(SW_SHOW);
+		if (currentRound->IsHumanPlayer()) {
+			buttonTruco.ShowWindow(SW_SHOW);
+			buttonAcceptTruco.ShowWindow(SW_SHOW);
+			buttonRejectTruco.ShowWindow(SW_SHOW);
+			buttonPlayCard.ShowWindow(SW_SHOW);
+		}
+		else {
+			buttonTruco.ShowWindow(SW_HIDE);
+			buttonAcceptTruco.ShowWindow(SW_HIDE);
+			buttonRejectTruco.ShowWindow(SW_HIDE);
+			buttonPlayCard.ShowWindow(SW_HIDE);
+		}
 	}
 	else {
 		buttonNewGame.ShowWindow(SW_SHOW);
