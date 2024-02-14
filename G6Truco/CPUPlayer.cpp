@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CPUPlayer.h"
+#include <algorithm>
 
 
 std::mutex CPUPlayer::playerMutex;
@@ -53,7 +54,7 @@ Card CPUPlayer::PlayCard()
 Card CPUPlayer::PlaySelectedCard(const Card& cardToPlay) {
 	auto it = std::find(hand.begin(), hand.end(), cardToPlay);
 	if (it != hand.end()) {
-		hand.erase(it);
+		selectedCardIndex = std::distance(hand.begin(), it);
 	}
 	return cardToPlay;
 }

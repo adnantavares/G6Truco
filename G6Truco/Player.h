@@ -14,12 +14,13 @@ protected:
     bool isHandHidden;
     std::function<void(Player*, int)> raiseBetCallback;
     CString playerName;
+    int selectedCardIndex = -1;
 
 public:
     Player(PlayerType type);
     ~Player() = default;
     PlayerType playerType;
-
+    void RemoveSelectedCard();
     virtual Card PlayCard() = 0;
     
 #pragma region Getters and Setters
@@ -27,6 +28,8 @@ public:
     std::vector<Card> GetHand() const;
     void SetPlayerName(const CString& name);
     CString GetPlayerName() const;
+    void SetSelectCardIndex(int index);
+    int GetSelectCardIndex() const;
 #pragma endregion
 
 #pragma region Events
