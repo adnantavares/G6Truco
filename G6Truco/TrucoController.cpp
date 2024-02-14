@@ -20,8 +20,7 @@ TrucoController::TrucoController()
 
 void TrucoController::PlayCard()
 {
-	round->PlayCard();
-	round->NextPlayer();
+	round->NotifyPlayingAction();
 }
 
 void TrucoController::RaiseBet()

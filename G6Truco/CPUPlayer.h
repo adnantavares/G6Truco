@@ -4,12 +4,11 @@
 #include "Player.h"
 #include "Round.h"
 #include "CardStrengthCalculator.h"
-#include <optional>
-#include <memory>
-#include <thread>
 #include <chrono>
-#include <deque>
+#include <memory>
 #include <mutex>
+#include <optional>
+#include <thread>
 
 // Forward Declaration
 class Round;

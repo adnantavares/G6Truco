@@ -5,9 +5,10 @@
 #include "Deck.h"
 #include "CardStrengthCalculator.h"
 #include <array>
-#include <vector>
-#include <utility>
+#include <mutex>
 #include <optional>
+#include <utility>
+#include <vector>
 #include "CPUPlayer.h"
 
 // Forward Declaration
@@ -16,6 +17,10 @@ class CPUPlayer;
 
 class Round {
 private:
+    static std::mutex roundMutex;
+    static std::condition_variable playingConditionVariable;
+    std::thread playingThread;
+
     int roundWinnerTeam;
     std::vector<int> points;
     Deck deck; // The deck of cards for the game
@@ -30,17 +35,21 @@ private:
     std::function<void()> roundOverEvent;
     std::vector<int> possibleBets;
 
+    void RemovePlayedCards();
+    void StartPlayingThread();
     void DetermineRoundPoint(int& playerIndex); // Determines the winner of the round point.
+    void PlayCard(); // Method for players(Humans or CPU) to play their cards.
+    void NextPlayer();
 
 public:
     Round();
-    void PlayCard(); // Method for players(Humans or CPU) to play their cards.
+
+    void NotifyPlayingAction();
     void RaiseBet(); // Raises the current bet (Truco, Seis, Nove, Doze).
     void DealCardsToPlayers();
     std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
     void OnRaiseBet(Player* player, int bet);
     void StartRound(int firstPlayer);
-    void NextPlayer();
     bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard);
 #pragma region Getters and Setters
     int GetActivePlayerIndex() const;
