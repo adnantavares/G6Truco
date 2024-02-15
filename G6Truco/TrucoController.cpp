@@ -30,6 +30,11 @@ void TrucoController::RaiseBet()
 	round->RaiseBet();
 }
 
+void TrucoController::DenyBet()
+{
+	round->DenyBet();
+}
+
 void TrucoController::StartGame() {
 	gamePoints.fill(0);
 	round->StartRound(firstPlayer);

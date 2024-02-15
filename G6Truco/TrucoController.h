@@ -24,6 +24,7 @@ public:
     TrucoController();
     void PlayCard();
     void RaiseBet();
+    void DenyBet();
     void StartGame();
     bool IsActivePlayerHuman();
     bool TrySetSelectedCardIndex(int index);

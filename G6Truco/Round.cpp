@@ -28,12 +28,9 @@ void Round::OnRaiseBet(Player* player, int betDecision) {
 	}
 	else
 	{
-		// In case CPU denies truco, the points are configured to finish the round with human team victory.
-		points[0] = 2;  // Human Team
-		points[1] = 0;  // CPU Team
+		DenyBet(player);
 	}
 	
-
 	if (!IsRoundOver()) {
 		RaiseRoundInformationChangedEvent();
 	}
@@ -172,12 +169,21 @@ void Round::RaiseBet()
 	CPUPlayer::NotifyPlayers(false);
 }
 
-void Round::DenyBet()
+void Round::DenyBet(Player* player)
 {
-	points[0] = 0;  // Human Team
-	points[1] = 2;  // CPU Team
+	PreviousBet();
 
-	IsRoundOver();
+	if (player == nullptr || IsHumanPlayer(player)) {
+		points[0] = 0;  // Human Team
+		points[1] = 2;  // CPU Team
+
+		IsRoundOver();
+	}
+	else {
+		// In case CPU denies truco, the points are configured to finish the round with human team victory.
+		points[0] = 2;  // Human Team
+		points[1] = 0;  // CPU Team
+	}
 }
 
 void Round::PlayCard()
@@ -185,6 +191,15 @@ void Round::PlayCard()
 	Card playedCard = players[activePlayerIndex]->PlayCard();
 	DefineWinningCard(playedCard);
 	roundCards.push_back(std::make_pair(players[activePlayerIndex].get(), playedCard));
+}
+
+void Round::PreviousBet()
+{
+	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
+	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
+		// Next bet, if it is not the last one.
+		currentBet = *(std::prev(it));
+	}
 }
 
 void Round::NextBet()

@@ -35,6 +35,8 @@ private:
     std::function<void()> roundOverEvent;
     std::vector<int> possibleBets;
     int currentTrucoCall;
+    
+    void PreviousBet();
     void NextBet();
     void RemovePlayedCards();
     void StartPlayingThread();
@@ -47,7 +49,7 @@ public:
 
     void NotifyPlayingAction();
     void RaiseBet(); // Raises the current bet (Truco, Seis, Nove, Doze).
-    void DenyBet(); // Deny bet from the main thread.
+    void DenyBet(Player* player = nullptr);
     void DealCardsToPlayers();
     std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
     void OnRaiseBet(Player* player, int betDecision);

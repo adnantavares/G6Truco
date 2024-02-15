@@ -409,6 +409,7 @@ void CG6TrucoView::OnButtonAcceptTrucoClicked()
 
 void CG6TrucoView::OnButtonRejectTrucoClicked()
 {
+	controller.DenyBet();
 }
 
 void CG6TrucoView::SetStatusBarText(const CString& strText) {
