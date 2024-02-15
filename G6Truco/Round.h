@@ -46,6 +46,7 @@ public:
 
     void NotifyPlayingAction();
     void RaiseBet(); // Raises the current bet (Truco, Seis, Nove, Doze).
+    void NextBet();
     void DealCardsToPlayers();
     std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
     void OnRaiseBet(Player* player, int bet);

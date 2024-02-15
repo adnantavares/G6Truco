@@ -22,6 +22,7 @@ void Round::OnRaiseBet(Player* player, int bet) {
 	else if (currentBet < bet) {
 		// CPU raised bet
 		// Truco button must be updated to the next value
+		NextBet();
 	}
 	else
 	{
@@ -165,12 +166,8 @@ void Round::NotifyPlayingAction()
 
 void Round::RaiseBet()
 {
-	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
-	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
-		// Next bet, if it is not the last one.
-		currentBet = *(std::next(it));
-	}
-
+	
+	NextBet();
 	// Notify one of the CPU players, who will decide to raise the bet, accept current one or leave the round
 	CPUPlayer::NotifyPlayers(false);
 }
@@ -182,6 +179,14 @@ void Round::PlayCard()
 	roundCards.push_back(std::make_pair(players[activePlayerIndex].get(), playedCard));
 }
 
+void Round::NextBet()
+{
+	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
+	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
+		// Next bet, if it is not the last one.
+		currentBet = *(std::next(it));
+	}
+}
 
 #pragma region Getters and setters
 int Round::GetActivePlayerIndex() const

@@ -33,6 +33,7 @@ private:
     void AnalyzeCurrentBet(Round* round);
     void TriggerPlayIntention(Round* round);
     void MonitorRoundState(Round* round);
+    int DecideBetAcceptance(int currentBet);
 
 public:
     static std::unique_ptr<CPUPlayer> Create(const CString& name, Round* round);

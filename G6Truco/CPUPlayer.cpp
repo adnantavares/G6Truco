@@ -103,8 +103,29 @@ void CPUPlayer::AnalyzeCurrentBet(Round* round)
 {
 	if (round->GetCurrentBet() > lastCurrentBet)
 	{
-		//lastCurrentBet = random
-		raiseBetCallback(this, -1);//lastCurrentBet);
+		lastCurrentBet = round->GetCurrentBet();
+		raiseBetCallback(this, DecideBetAcceptance(lastCurrentBet));
+	}
+}
+
+int CPUPlayer::DecideBetAcceptance(int currentBet)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+
+	std::uniform_int_distribution<> distrib(0, 2);
+
+	int decisionValue = distrib(gen);
+
+	switch (decisionValue) {
+	case 0: //reject Truco
+		return -1;
+	case 1: //raise bet
+		return 999;
+	case 2: //accept truco
+		return currentBet;
+	default:
+		return currentBet;
 	}
 }
 
