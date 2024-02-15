@@ -66,6 +66,7 @@ public:
     bool IsHumanPlayer();
     bool IsHumanPlayer(Player* player);
     void DefineWinningCard(Card playedCard);
+    std::vector<int> GetPoints();
     CPUPlayer* GetCPUActivePlayer(); //nullPtr if the active player is not a CPUPlayer
 #pragma endregion
 

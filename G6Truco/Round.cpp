@@ -280,6 +280,11 @@ void Round::DefineWinningCard(Card playedCard)
 	}
 }
 
+std::vector<int> Round::GetPoints()
+{
+	return points;
+}
+
 CPUPlayer* Round::GetCPUActivePlayer()
 {
 	Player* activePlayer = GetActivePlayer();

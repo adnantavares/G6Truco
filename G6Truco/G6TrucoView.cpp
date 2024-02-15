@@ -129,6 +129,7 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 
 	if (start) {
 		DrawCards(pDC);
+		DrawScoreBoard(pDC);
 	}
 
 	pDC->BitBlt(820, 400, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
@@ -146,6 +147,17 @@ void CG6TrucoView::DrawPlayerCards(CDC* pDC, Player* p, int x, int y) {
 		}
 		x += 60;
 	}
+}
+
+void CG6TrucoView::DrawScoreBoard(CDC* pDC)
+{
+	pDC->TextOut(1500, 70, L"Round Points");
+	std::string score = "Team 1: ";
+	score.append(std::to_string(currentRound->GetPoints().at(0)));
+	pDC->TextOut(1500, 100, CString(score.c_str()));
+	score = "Team 2: ";
+	score.append(std::to_string(currentRound->GetPoints().at(1)));
+	pDC->TextOut(1500, 130, CString(score.c_str()));
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
