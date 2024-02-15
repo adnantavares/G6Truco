@@ -118,6 +118,8 @@ protected:
 	void OnButtonTrucoClicked();
 	void OnButtonNewGameClicked();
 	void OnButtonPlayCardClicked();
+	void OnButtonAcceptTrucoClicked();
+	void OnButtonRejectTrucoClicked();
 	DECLARE_MESSAGE_MAP()
 };
 

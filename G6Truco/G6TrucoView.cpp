@@ -33,6 +33,8 @@ BEGIN_MESSAGE_MAP(CG6TrucoView, CView)
 	ON_BN_CLICKED(BUTTONTRUCOID, OnButtonTrucoClicked)
 	ON_BN_CLICKED(BUTTONNEWGAMEID, OnButtonNewGameClicked)
 	ON_BN_CLICKED(BUTTONPLAYCARDID, OnButtonPlayCardClicked)
+	ON_BN_CLICKED(BUTTONACCEPTTRUCOID, OnButtonAcceptTrucoClicked)
+	ON_BN_CLICKED(BUTTONREJECTTRUCOID, OnButtonRejectTrucoClicked)
 END_MESSAGE_MAP()
 
 // CG6TrucoView construction/destruction
@@ -169,7 +171,6 @@ void CG6TrucoView::DrawScoreBoard(CDC* pDC)
 	score = "Team Bot: ";
 	score.append(std::to_string(controller.GetGamePoints()[1]));
 	pDC->TextOut(1600, 130, CString(score.c_str()));
-
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
@@ -182,6 +183,10 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 
 	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[currentRound->GetViraCard().GetSuit()][currentRound->GetViraCard().GetRank()], 0, 0, SRCCOPY);
 
+	std::string bet = "Current Bet: ";
+	bet.append(std::to_string(currentRound->GetCurrentBet()));
+	SetStatusBarText(CString(bet.c_str()));
+	
 	DrawPlayerCards(pDC, players.at(1), 40, 350);
 	pDC->TextOut(140, 600, players.at(1)->GetPlayerName());
 
@@ -255,7 +260,6 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 3;
 		}
 		hideCard = false;
-		SetStatusBarText(L"Card 3 Clicked");
 		Invalidate();
 	}
 	else if (m_Card2Rect.PtInRect(point) && p->GetHand().size() >= 2) {
@@ -266,7 +270,6 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 2;
 		}
 		hideCard = false;
-		SetStatusBarText(L"Card 2 Clicked");
 		Invalidate();
 	}
 	else if (m_Card1Rect.PtInRect(point) && p->GetHand().size() >= 1) {
@@ -277,7 +280,6 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 			cardClicked = 1;
 		}
 		hideCard = false;
-		SetStatusBarText(L"Card 1 Clicked");
 		Invalidate();
 	}
 	CView::OnLButtonDown(nFlags, point);
@@ -320,10 +322,10 @@ void CG6TrucoView::OnInitialUpdate()
 	buttonNewGame.Create(L"New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONNEWGAMEID);
 	buttonNewGame.MoveWindow(850, 650, 180, 80);
 
-	CreateButton(buttonPlayCard, _T("Play Card"), CRect(1100, 750, 1250, 810), BUTTONPLAYCARDID);
-	CreateButton(buttonAcceptTruco, _T("Accept"), CRect(100, 100, 200, 140), BUTTONACCEPTTRUCOID);
-	CreateButton(buttonTruco, _T("Truco"), CRect(210, 100, 310, 140), BUTTONTRUCOID);
-	CreateButton(buttonRejectTruco, _T("Reject"), CRect(320, 100, 420, 140), BUTTONREJECTTRUCOID);
+	CreateButton(buttonPlayCard, _T("Play Card"), CRect(1150, 750, 1300, 810), BUTTONPLAYCARDID);
+	CreateButton(buttonAcceptTruco, _T("Accept"), CRect(600, 660, 750, 720), BUTTONACCEPTTRUCOID);
+	CreateButton(buttonTruco, _T("Truco"), CRect(600, 750, 750, 810), BUTTONTRUCOID);
+	CreateButton(buttonRejectTruco, _T("Reject"), CRect(600, 840, 750, 900), BUTTONREJECTTRUCOID);
 }
 
 void CG6TrucoView::CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton)
@@ -338,12 +340,30 @@ void CG6TrucoView::UpdateButtons() {
 	if (start) {
 		buttonNewGame.ShowWindow(SW_HIDE);
 		if (currentRound->IsHumanPlayer()) {
-			buttonTruco.ShowWindow(SW_SHOW);
-			buttonAcceptTruco.ShowWindow(SW_SHOW);
-			buttonRejectTruco.ShowWindow(SW_SHOW);
-			buttonPlayCard.ShowWindow(SW_SHOW);
+			if (currentRound->GetCurrentTrucoCall() == Round::TrucoCallType::NONE) {
+				//No Truco call - Normal Hand
+				buttonTruco.ShowWindow(SW_SHOW);
+				buttonPlayCard.ShowWindow(SW_SHOW);
+				buttonAcceptTruco.ShowWindow(SW_HIDE);
+				buttonRejectTruco.ShowWindow(SW_HIDE);
+			}
+			else if (currentRound->GetCurrentTrucoCall() == Round::TrucoCallType::CPU_ACCEPTED) {
+				//CPU Accepts the Truco Call - Truco Hand
+				buttonTruco.ShowWindow(SW_HIDE);
+				buttonPlayCard.ShowWindow(SW_SHOW);
+				buttonAcceptTruco.ShowWindow(SW_HIDE);
+				buttonRejectTruco.ShowWindow(SW_HIDE);
+			}
+			else {
+				//CPU Raised the bet - Decision Hand
+				buttonTruco.ShowWindow(SW_HIDE);
+				buttonPlayCard.ShowWindow(SW_HIDE);
+				buttonAcceptTruco.ShowWindow(SW_SHOW);
+				buttonRejectTruco.ShowWindow(SW_SHOW);
+			}	
 		}
 		else {
+			//CPU turn
 			buttonTruco.ShowWindow(SW_HIDE);
 			buttonAcceptTruco.ShowWindow(SW_HIDE);
 			buttonRejectTruco.ShowWindow(SW_HIDE);
@@ -351,6 +371,7 @@ void CG6TrucoView::UpdateButtons() {
 		}
 	}
 	else {
+		//New Game Main screen
 		buttonNewGame.ShowWindow(SW_SHOW);
 		buttonTruco.ShowWindow(SW_HIDE);
 		buttonAcceptTruco.ShowWindow(SW_HIDE);
@@ -362,13 +383,11 @@ void CG6TrucoView::UpdateButtons() {
 void CG6TrucoView::OnButtonTrucoClicked() 
 {
 	controller.RaiseBet();
-	buttonTruco.SetWindowTextW(L"TESTE");
-	SetStatusBarText(L"Truco Button Clicked");
+	//buttonTruco.SetWindowTextW(L"TESTE");
 }
 
 void CG6TrucoView::OnButtonNewGameClicked()
 {
-	SetStatusBarText(L"New Game Button Clicked");
 	start = true;
 	controller.StartGame();
 }
@@ -382,6 +401,14 @@ void CG6TrucoView::OnButtonPlayCardClicked()
 	else {
 		SetStatusBarText(L"No Card Selected");
 	}
+}
+
+void CG6TrucoView::OnButtonAcceptTrucoClicked()
+{
+}
+
+void CG6TrucoView::OnButtonRejectTrucoClicked()
+{
 }
 
 void CG6TrucoView::SetStatusBarText(const CString& strText) {

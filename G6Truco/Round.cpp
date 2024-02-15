@@ -18,10 +18,12 @@ void Round::OnRaiseBet(Player* player, int betDecision) {
 	if (currentBet == betDecision) {
 		// CPU only accepted truco
 		// Truco button must be disabled
+		currentTrucoCall = TrucoCallType::CPU_ACCEPTED;
 	}
 	else if (currentBet < betDecision) {
 		// CPU raised bet
 		// Truco button must be updated to the next value
+		currentTrucoCall = TrucoCallType::CPU_RAISED;
 		NextBet();
 	}
 	else
@@ -39,6 +41,7 @@ void Round::OnRaiseBet(Player* player, int betDecision) {
 
 void Round::StartRound(int firstPlayer) {
 	currentBet = 1;
+	currentTrucoCall = TrucoCallType::NONE;
 	winningCard.reset();
 	roundCards.clear();
 	deck.InitializeDeck();
@@ -273,6 +276,11 @@ int Round::GetCurrentBet()
 void Round::SetCurrentBet(int bet)
 {
 	currentBet = bet;
+}
+
+int Round::GetCurrentTrucoCall()
+{
+	return currentTrucoCall;
 }
 
 bool Round::IsHumanPlayer()

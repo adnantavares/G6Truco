@@ -34,7 +34,7 @@ private:
     std::function<void(Round*)> roundInformationChangedEvent;
     std::function<void()> roundOverEvent;
     std::vector<int> possibleBets;
-
+    int currentTrucoCall;
     void NextBet();
     void RemovePlayedCards();
     void StartPlayingThread();
@@ -53,6 +53,7 @@ public:
     void OnRaiseBet(Player* player, int betDecision);
     void StartRound(int firstPlayer);
     bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard);
+    enum TrucoCallType { NONE, CPU_ACCEPTED, CPU_RAISED};
 #pragma region Getters and Setters
     int GetActivePlayerIndex() const;
     Player* GetActivePlayer();
@@ -65,6 +66,7 @@ public:
     int GetCurrentBet();
     int GetWinnerTeam() const; // Determines the winner of the round.
     void SetCurrentBet(int bet);
+    int GetCurrentTrucoCall();
     bool IsHumanPlayer();
     bool IsHumanPlayer(Player* player);
     void DefineWinningCard(Card playedCard);
