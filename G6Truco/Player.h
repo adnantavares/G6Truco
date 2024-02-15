@@ -12,7 +12,6 @@ public:
 protected:
     std::vector<Card> hand;
     bool isHandHidden;
-    std::function<void(Player*, int)> raiseBetCallback;
     CString playerName;
     int selectedCardIndex = -1;
 
@@ -30,11 +29,6 @@ public:
     CString GetPlayerName() const;
     void SetSelectCardIndex(int index);
     int GetSelectCardIndex() const;
-#pragma endregion
-
-#pragma region Events
-    void SetRaiseBetCallback(std::function<void(Player*, int)> callback);
-    void RaiseBetEvent(int bet);
 #pragma endregion
 };
 

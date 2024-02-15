@@ -16,17 +16,7 @@ void Player::RemoveSelectedCard()
 	selectedCardIndex = -1;
 }
 
-#pragma region Events
-void Player::SetRaiseBetCallback(std::function<void(Player*, int)> callback) {
-	raiseBetCallback = callback;
-}
 
-void Player::RaiseBetEvent(int bet) {
-	if (raiseBetCallback) {
-		raiseBetCallback(this, bet);
-	}
-}
-#pragma endregion
 
 #pragma region Getters and Setters
 void Player::SetHand(std::vector<Card>& newHand)

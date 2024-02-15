@@ -5,6 +5,7 @@
 
 std::mutex CPUPlayer::playerMutex;
 std::condition_variable CPUPlayer::playerConditionVariable;
+int CPUPlayer::lastCurrentBet;
 
 
 CPUPlayer::CPUPlayer(const CString& name) : Player(PlayerType::Cpu)
@@ -20,9 +21,14 @@ std::unique_ptr<CPUPlayer> CPUPlayer::Create(const CString& name, Round* round)
 	return std::move(player);
 }
 
-void CPUPlayer::NotifyPlayers()
+void CPUPlayer::NotifyPlayers(bool notifyAll)
 {
-	playerConditionVariable.notify_all();
+	if (notifyAll) {
+		playerConditionVariable.notify_all();
+	}
+	else {
+		playerConditionVariable.notify_one();
+	}
 }
 
 Card CPUPlayer::PlayCard()
@@ -93,6 +99,31 @@ std::optional<Card> CPUPlayer::FindStrongerCard(const Card& targetCard) const
 	}
 }
 
+void CPUPlayer::AnalyzeCurrentBet(Round* round)
+{
+	if (round->GetCurrentBet() > lastCurrentBet)
+	{
+		//lastCurrentBet = random
+		raiseBetCallback(this, -1);//lastCurrentBet);
+	}
+}
+
+void CPUPlayer::TriggerPlayIntention(Round* round)
+{
+	CPUPlayer* cpuPlayer = round->GetCPUActivePlayer();
+
+	//If next player is this bot player, play its card automatically.
+	if (cpuPlayer != nullptr && cpuPlayer->GetPlayerName() == this->GetPlayerName())
+	{
+		this->SetWinningCard(round->GetWinningCard()); //Set winningCard in order to CPU player knows witch card to play
+
+		// Waits Human Player card being invalidated, before playing CPU Player card
+		std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(PLAY_INTERVAL));
+
+		round->NotifyPlayingAction();
+	}
+}
+
 void CPUPlayer::MonitorRoundState(Round* round)
 {
 	// Bot player keeps monitoring the round in order to play when it is its turn
@@ -101,23 +132,25 @@ void CPUPlayer::MonitorRoundState(Round* round)
 
 		while (true)
 		{
-			CPUPlayer* cpuPlayer = round->GetCPUActivePlayer();
+			AnalyzeCurrentBet(round);
+			TriggerPlayIntention(round);
 
-			//If next player is this bot player, play its card automatically.
-			if (cpuPlayer != nullptr && cpuPlayer->GetPlayerName() == this->GetPlayerName())
-			{
-				this->SetWinningCard(round->GetWinningCard()); //Set winningCard in order to CPU player knows witch card to play
-				
-				// Waits Human Player card being invalidated, before playing CPU Player card
-				std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(PLAY_INTERVAL));
-				
-				round->NotifyPlayingAction();
-			}
-			
 			playerConditionVariable.wait(l);
 		}
 	});
 
 	activePlayerThread.detach();
 }
+
+#pragma region Events
+void CPUPlayer::SetRaiseBetCallback(std::function<void(Player*, int)> callback) {
+	raiseBetCallback = callback;
+}
+
+void CPUPlayer::RaiseBetEvent(int bet) {
+	if (raiseBetCallback) {
+		raiseBetCallback(this, bet);
+	}
+}
+#pragma endregion
 

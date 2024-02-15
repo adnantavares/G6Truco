@@ -15,7 +15,25 @@ Round::Round()
 }
 
 void Round::OnRaiseBet(Player* player, int bet) {
+	if (currentBet == bet) {
+		// CPU only accepted truco
+		// Truco button must be disabled
+	}
+	else if (currentBet < bet) {
+		// CPU raised bet
+		// Truco button must be updated to the next value
+	}
+	else
+	{
+		// In case CPU denies truco, the points are configured to finish the round with human team victory.
+		points[0] = 2;  // Human Team
+		points[1] = 0;  // CPU Team
+	}
+	
 
+	if (!IsRoundOver()) {
+		RaiseRoundInformationChangedEvent();
+	}
 }
 
 void Round::StartRound(int firstPlayer) {
@@ -152,6 +170,9 @@ void Round::RaiseBet()
 		// Next bet, if it is not the last one.
 		currentBet = *(std::next(it));
 	}
+
+	// Notify one of the CPU players, who will decide to raise the bet, accept current one or leave the round
+	CPUPlayer::NotifyPlayers(false);
 }
 
 void Round::PlayCard()
@@ -203,12 +224,19 @@ const std::array<std::unique_ptr<Player>, 4>& Round::GetAllPlayers() const
 void Round::SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers)
 {
 	players = std::move(allPlayers);
+
+	for (auto& player : players) {
+		if (!IsHumanPlayer(player.get())) {
+			CPUPlayer* cpuPlayer = dynamic_cast<CPUPlayer*>(player.get());
+			cpuPlayer->SetRaiseBetCallback(std::bind(&Round::OnRaiseBet, this, std::placeholders::_1, std::placeholders::_2));
+		}
+	}
 }
 
 bool Round::IsRoundOver()
 {
 	auto it = std::max_element(points.begin(), points.end()); // iterator to the team with more points
-	int teamIndex = std::distance(points.begin(), it); // 0 is first team, 1 is second team
+	int teamIndex = std::distance(points.begin(), it); // 0 is human team, 1 is CPU team
 	int teamPoints = *it;
 
 	if (teamPoints < 2) {
