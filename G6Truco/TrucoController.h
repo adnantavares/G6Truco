@@ -7,13 +7,17 @@
 
 class TrucoController {
 private:
-    const int NUMBER_OF_PLAYERS = 4;
+    std::mutex roundMutex;
+    std::condition_variable roundConditionVariable;
+    std::thread roundHandlerThread;
+
     int firstPlayer;
     std::unique_ptr<Round> round;
     std::function<void(Player*)> activePlayerChangedEvent;
 
+    void StartRoundHandlerThread();
     void RaiseActivePlayerChangedEvent(Player* currentPlayer);
-    void HandleRoundOver();
+    void NotifyRoundOver();
 
 public:
     TrucoController();

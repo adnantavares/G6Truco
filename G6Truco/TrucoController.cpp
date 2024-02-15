@@ -4,7 +4,7 @@
 TrucoController::TrucoController()
 {
 	firstPlayer = 0;
-	std::array<std::unique_ptr<Player>, 4/*NUMBER_OF_PLAYERS*/> players;
+	std::array<std::unique_ptr<Player>, 4> players;
 
 	round = std::make_unique<Round>();
 
@@ -15,7 +15,9 @@ TrucoController::TrucoController()
 	players[3] = CPUPlayer::Create(L"BOT-Danilo", round.get());
 
 	round->SetPlayers(std::move(players));
-	round->RoundOverEventListener(std::bind(&TrucoController::HandleRoundOver, this));
+	round->RoundOverEventListener(std::bind(&TrucoController::NotifyRoundOver, this));
+	
+	StartRoundHandlerThread();
 }
 
 void TrucoController::PlayCard()
@@ -64,6 +66,27 @@ void TrucoController::RoundInformationChangedEventListener(std::function<void(Ro
 #pragma endregion
 
 #pragma region Trigger events
+void TrucoController::StartRoundHandlerThread()
+{
+	// Creates handler thread to update UI and start another round
+	roundHandlerThread = std::thread([this]() {
+		std::unique_lock l(roundMutex);
+
+		while (true)
+		{
+			roundConditionVariable.wait(l);
+
+			int winnerTeamIndex = round->GetWinnerTeam();
+			int currentBet = round->GetCurrentBet();
+
+			//TODO: Check if has a game winner team, before start a new round
+			firstPlayer = (firstPlayer + 1) % 4;
+			round->StartRound(firstPlayer);
+		}
+	});
+
+	roundHandlerThread.detach();
+}
 void TrucoController::RaiseActivePlayerChangedEvent(Player* currentPlayer)
 {
 	if (activePlayerChangedEvent) {
@@ -73,14 +96,9 @@ void TrucoController::RaiseActivePlayerChangedEvent(Player* currentPlayer)
 #pragma endregion
 
 #pragma region Event listeners
-void TrucoController::HandleRoundOver()
+void TrucoController::NotifyRoundOver()
 {
-	int winnerTeamIndex = round->GetWinnerTeam();
-	int currentBet = round->GetCurrentBet();
-	
-	//TODO: Check if has a game winner team, before start a new round
-	firstPlayer = (firstPlayer + 1) % NUMBER_OF_PLAYERS;
-	round->StartRound(firstPlayer);
+	roundConditionVariable.notify_one();
 }
 #pragma endregion
 

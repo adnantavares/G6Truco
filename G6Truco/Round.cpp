@@ -2,7 +2,7 @@
 #include "Round.h"
 
 
-std::mutex Round::roundMutex;
+std::mutex Round::playingMutex;
 std::condition_variable Round::playingConditionVariable;
 
 
@@ -14,12 +14,12 @@ Round::Round()
 	StartPlayingThread();
 }
 
-void Round::OnRaiseBet(Player* player, int bet) {
-	if (currentBet == bet) {
+void Round::OnRaiseBet(Player* player, int betDecision) {
+	if (currentBet == betDecision) {
 		// CPU only accepted truco
 		// Truco button must be disabled
 	}
-	else if (currentBet < bet) {
+	else if (currentBet < betDecision) {
 		// CPU raised bet
 		// Truco button must be updated to the next value
 		NextBet();
@@ -43,6 +43,7 @@ void Round::StartRound(int firstPlayer) {
 	roundCards.clear();
 	deck.InitializeDeck();
 	deck.Shuffle();
+	CPUPlayer::ResetPlayerBet();
 
 	DealCardsToPlayers();
 	SetViraCard(TakeCardFromTopDeck(1)[0]);
@@ -117,7 +118,7 @@ void Round::StartPlayingThread()
 {
 	// Creates playing thread to handle the player actions
 	playingThread = std::thread([this]() {
-		std::unique_lock l(roundMutex);
+		std::unique_lock l(playingMutex);
 
 		while (true)
 		{
@@ -155,10 +156,6 @@ void Round::DetermineRoundPoint(int& playerIndex)
 	RemovePlayedCards();
 }
 
-int Round::GetWinnerTeam() const {
-	return roundWinnerTeam;
-}
-
 void Round::NotifyPlayingAction()
 {
 	playingConditionVariable.notify_one();
@@ -170,6 +167,14 @@ void Round::RaiseBet()
 	NextBet();
 	// Notify one of the CPU players, who will decide to raise the bet, accept current one or leave the round
 	CPUPlayer::NotifyPlayers(false);
+}
+
+void Round::DenyBet()
+{
+	points[0] = 0;  // Human Team
+	points[1] = 2;  // CPU Team
+
+	IsRoundOver();
 }
 
 void Round::PlayCard()
@@ -189,6 +194,10 @@ void Round::NextBet()
 }
 
 #pragma region Getters and setters
+int Round::GetWinnerTeam() const {
+	return roundWinnerTeam;
+}
+
 int Round::GetActivePlayerIndex() const
 {
 	return activePlayerIndex;
@@ -322,7 +331,6 @@ void Round::RaiseRoundInformationChangedEvent()
 		roundInformationChangedEvent(this);
 	}
 }
-
 #pragma endregion
 
 

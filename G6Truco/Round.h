@@ -17,7 +17,7 @@ class CPUPlayer;
 
 class Round {
 private:
-    static std::mutex roundMutex;
+    static std::mutex playingMutex;
     static std::condition_variable playingConditionVariable;
     std::thread playingThread;
 
@@ -35,6 +35,7 @@ private:
     std::function<void()> roundOverEvent;
     std::vector<int> possibleBets;
 
+    void NextBet();
     void RemovePlayedCards();
     void StartPlayingThread();
     void DetermineRoundPoint(int& playerIndex); // Determines the winner of the round point.
@@ -46,10 +47,10 @@ public:
 
     void NotifyPlayingAction();
     void RaiseBet(); // Raises the current bet (Truco, Seis, Nove, Doze).
-    void NextBet();
+    void DenyBet(); // Deny bet from the main thread.
     void DealCardsToPlayers();
     std::vector<Card> TakeCardFromTopDeck(int numberOfCards);
-    void OnRaiseBet(Player* player, int bet);
+    void OnRaiseBet(Player* player, int betDecision);
     void StartRound(int firstPlayer);
     bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard);
 #pragma region Getters and Setters

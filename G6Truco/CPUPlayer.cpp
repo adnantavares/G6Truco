@@ -31,6 +31,11 @@ void CPUPlayer::NotifyPlayers(bool notifyAll)
 	}
 }
 
+void CPUPlayer::ResetPlayerBet()
+{
+	lastCurrentBet = 1;
+}
+
 Card CPUPlayer::PlayCard()
 {
 	// If no card is winning yet, play the weakest card
@@ -104,11 +109,11 @@ void CPUPlayer::AnalyzeCurrentBet(Round* round)
 	if (round->GetCurrentBet() > lastCurrentBet)
 	{
 		lastCurrentBet = round->GetCurrentBet();
-		raiseBetCallback(this, DecideBetAcceptance(lastCurrentBet));
+		raiseBetCallback(this, DecideBetAcceptance());
 	}
 }
 
-int CPUPlayer::DecideBetAcceptance(int currentBet)
+int CPUPlayer::DecideBetAcceptance()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -119,13 +124,13 @@ int CPUPlayer::DecideBetAcceptance(int currentBet)
 
 	switch (decisionValue) {
 	case 0: //reject Truco
-		return -1;
+		return INT_MIN;
 	case 1: //raise bet
-		return 999;
+		return INT_MAX;
 	case 2: //accept truco
-		return currentBet;
+		return lastCurrentBet;
 	default:
-		return currentBet;
+		return lastCurrentBet;
 	}
 }
 

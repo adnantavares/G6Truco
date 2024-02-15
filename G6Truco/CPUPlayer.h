@@ -33,11 +33,12 @@ private:
     void AnalyzeCurrentBet(Round* round);
     void TriggerPlayIntention(Round* round);
     void MonitorRoundState(Round* round);
-    int DecideBetAcceptance(int currentBet);
+    int DecideBetAcceptance();
 
 public:
     static std::unique_ptr<CPUPlayer> Create(const CString& name, Round* round);
     static void NotifyPlayers(bool notifyAll = true);
+    static void ResetPlayerBet();
 
     Card PlayCard() override;
     void SetWinningCard(std::optional<std::pair<Player*, Card>> newWinningCard);
