@@ -31,7 +31,7 @@ void TrucoController::RaiseBet()
 }
 
 void TrucoController::StartGame() {
-
+	gamePoints.fill(0);
 	round->StartRound(firstPlayer);
 	RaiseActivePlayerChangedEvent(round->GetActivePlayer());
 }
@@ -52,6 +52,10 @@ bool TrucoController::TrySetSelectedCardIndex(int index)
 		}
 	}
 	return false;
+}
+
+std::array<int, 2> TrucoController::GetGamePoints() {
+	return gamePoints;
 }
 
 #pragma region Set events
@@ -78,8 +82,7 @@ void TrucoController::StartRoundHandlerThread()
 
 			int winnerTeamIndex = round->GetWinnerTeam();
 			int currentBet = round->GetCurrentBet();
-
-			//TODO: Check if has a game winner team, before start a new round
+			gamePoints[winnerTeamIndex] += currentBet;
 			firstPlayer = (firstPlayer + 1) % 4;
 			round->StartRound(firstPlayer);
 		}

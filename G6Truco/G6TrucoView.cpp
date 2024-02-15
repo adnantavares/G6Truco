@@ -126,7 +126,10 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	CRect rect;
 	GetClientRect(&rect);
 	pDC->FillRect(&rect, &backgroundBrush);
-
+	if (controller.GetGamePoints()[0] >= 12 || controller.GetGamePoints()[1] >= 12) {
+		start = false;
+		DrawScoreBoard(pDC);
+	}
 	if (start) {
 		DrawCards(pDC);
 		DrawScoreBoard(pDC);
@@ -151,13 +154,22 @@ void CG6TrucoView::DrawPlayerCards(CDC* pDC, Player* p, int x, int y) {
 
 void CG6TrucoView::DrawScoreBoard(CDC* pDC)
 {
-	pDC->TextOut(1500, 70, L"Round Points");
-	std::string score = "Team 1: ";
+	pDC->TextOut(1400, 70, L"Round Points");
+	std::string score = "Team Human: ";
 	score.append(std::to_string(currentRound->GetPoints().at(0)));
-	pDC->TextOut(1500, 100, CString(score.c_str()));
-	score = "Team 2: ";
+	pDC->TextOut(1400, 100, CString(score.c_str()));
+	score = "Team Bot: ";
 	score.append(std::to_string(currentRound->GetPoints().at(1)));
-	pDC->TextOut(1500, 130, CString(score.c_str()));
+	pDC->TextOut(1400, 130, CString(score.c_str()));
+
+	pDC->TextOut(1600, 70, L"Game Points");
+	score = "Team Human: ";
+	score.append(std::to_string(controller.GetGamePoints()[0]));
+	pDC->TextOut(1600, 100, CString(score.c_str()));
+	score = "Team Bot: ";
+	score.append(std::to_string(controller.GetGamePoints()[1]));
+	pDC->TextOut(1600, 130, CString(score.c_str()));
+
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {

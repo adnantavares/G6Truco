@@ -14,6 +14,7 @@ private:
     int firstPlayer;
     std::unique_ptr<Round> round;
     std::function<void(Player*)> activePlayerChangedEvent;
+    std::array<int, 2> gamePoints;
 
     void StartRoundHandlerThread();
     void RaiseActivePlayerChangedEvent(Player* currentPlayer);
@@ -26,6 +27,7 @@ public:
     void StartGame();
     bool IsActivePlayerHuman();
     bool TrySetSelectedCardIndex(int index);
+    std::array<int, 2> GetGamePoints();
 
 #pragma region Events
 #pragma region Round event listeners
