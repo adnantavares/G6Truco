@@ -81,6 +81,7 @@ public:
     void SetCurrentTrucoCall(int type);
     std::vector<int> GetPoints();
     CPUPlayer* GetCPUActivePlayer(); // Remark: nullPtr is returned if the active player is not a CPUPlayer
+    int GetNextBetValue(int bet);
 #pragma endregion
 
 #pragma region Events

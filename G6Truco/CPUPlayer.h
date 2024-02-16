@@ -33,7 +33,7 @@ private:
     void AnalyzeCurrentBet(Round* round); // Checks the current bet from the round to take an action
     void TriggerPlayIntention(Round* round); // Sends signal to the Round Playing thread
     void MonitorRoundState(Round* round); // Starts thread that monitors round state always a condition variable is notified.
-    int DecideBetAcceptance(); // Decides for accepting, raising or denying a bet (Truco)
+    int DecideBetAcceptance(Round* round); // Decides for accepting, raising or denying a bet (Truco)
     void SetWinningCard(std::optional<std::pair<Player*, Card>> newWinningCard); // Receives winning card from the round to be used in playing decision
 
 public:

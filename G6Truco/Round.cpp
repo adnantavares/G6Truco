@@ -201,7 +201,7 @@ void Round::PreviousBet()
 {
 	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
 	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
-		// Next bet, if it is not the last one.
+		// Previous bet, if it is not the first one.
 		currentBet = *(std::prev(it));
 	}
 }
@@ -338,6 +338,16 @@ CPUPlayer* Round::GetCPUActivePlayer()
 	Player* activePlayer = GetActivePlayer();
 	CPUPlayer* cpuPlayer = dynamic_cast<CPUPlayer*>(activePlayer);
 	return cpuPlayer;
+}
+
+int Round::GetNextBetValue(int bet)
+{
+	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
+	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
+		// Next bet, if it is not the last one.
+		bet = *(std::next(it));
+	}
+	return bet;
 }
 #pragma endregion
 
