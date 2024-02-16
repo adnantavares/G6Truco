@@ -7,9 +7,9 @@ Grupo G6
 - Pedro Dominciano
 - Priscila Oliveira
 
-Os documentos de entrega senecontram na raiz do repositorio:
+Os documentos de entrega se encontram na raiz do repositório:
 - Relatorio_ProjetoFinal.pdf
-- Requisito_ProjetoFinal.pdf
+- Requisitos_ProjetoFinal.pdf
 
 Desenvolvido em Visual Studio 2022 usando ISO C++ 17 Standard.
 
