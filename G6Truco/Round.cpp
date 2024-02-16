@@ -200,7 +200,7 @@ void Round::PlayCard()
 void Round::PreviousBet()
 {
 	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
-	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
+	if (it != possibleBets.begin()) {
 		// Previous bet, if it is not the first one.
 		currentBet = *(std::prev(it));
 	}
@@ -208,11 +208,7 @@ void Round::PreviousBet()
 
 void Round::NextBet()
 {
-	auto it = std::find(possibleBets.begin(), possibleBets.end(), currentBet);
-	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
-		// Next bet, if it is not the last one.
-		currentBet = *(std::next(it));
-	}
+	currentBet = GetNextBetValue(currentBet);
 }
 
 bool Round::IsRoundOver()
