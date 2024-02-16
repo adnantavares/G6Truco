@@ -63,6 +63,7 @@ private:
 	void DrawScoreBoard(CDC* pDC);
 	void UpdateButtons();
 	void SetStatusBarText(const CString& strText);
+	void ShowTrucoButton();
 	const std::string cardsNameMap[4][10] = { 
 		{"c2","c3","c4","c5","c6","c7","cj","cq","ck","ca"},
 		{"e2","e3","e4","e5","e6","e7","ej","eq","ek","ea"},

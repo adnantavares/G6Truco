@@ -104,7 +104,7 @@ void CG6TrucoView::OnRoundInformationsChangedEvent(Round* currentRoundInformatio
 //TODO: Replace this to MVC pattern
 void CG6TrucoView::OnBnClickedRaiseBet()
 {
-	
+
 }
 
 BOOL CG6TrucoView::PreCreateWindow(CREATESTRUCT& cs)
@@ -174,7 +174,7 @@ void CG6TrucoView::DrawScoreBoard(CDC* pDC)
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
-    std::vector<Player*> players;
+	std::vector<Player*> players;
 	for (int a = 0; a < 4; a++) {
 		players.push_back(currentRound->GetAllPlayers().at(a).get());
 	}
@@ -186,7 +186,7 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 	std::string bet = "Current Bet: ";
 	bet.append(std::to_string(currentRound->GetCurrentBet()));
 	SetStatusBarText(CString(bet.c_str()));
-	
+
 	DrawPlayerCards(pDC, players.at(1), 40, 350);
 	pDC->TextOut(140, 600, players.at(1)->GetPlayerName());
 
@@ -242,7 +242,7 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 			}
 		}
 	}
-	
+
 }
 
 void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -263,7 +263,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 		Invalidate();
 	}
 	else if (m_Card2Rect.PtInRect(point) && p->GetHand().size() >= 2) {
-		if (cardClicked ==2) {
+		if (cardClicked == 2) {
 			cardClicked = 0;
 		}
 		else {
@@ -342,7 +342,7 @@ void CG6TrucoView::UpdateButtons() {
 		if (currentRound->IsHumanPlayer()) {
 			if (currentRound->GetCurrentTrucoCall() == Round::TrucoCallType::NONE) {
 				//No Truco call - Normal Hand
-				buttonTruco.ShowWindow(SW_SHOW);
+				ShowTrucoButton();
 				buttonPlayCard.ShowWindow(SW_SHOW);
 				buttonAcceptTruco.ShowWindow(SW_HIDE);
 				buttonRejectTruco.ShowWindow(SW_HIDE);
@@ -360,7 +360,7 @@ void CG6TrucoView::UpdateButtons() {
 				buttonPlayCard.ShowWindow(SW_HIDE);
 				buttonAcceptTruco.ShowWindow(SW_SHOW);
 				buttonRejectTruco.ShowWindow(SW_SHOW);
-			}	
+			}
 		}
 		else {
 			//CPU turn
@@ -380,10 +380,28 @@ void CG6TrucoView::UpdateButtons() {
 	}
 }
 
-void CG6TrucoView::OnButtonTrucoClicked() 
+void CG6TrucoView::ShowTrucoButton() {
+	//Hide Truco button when its on an "Eleven Hand" or the the current bet reach the maximum points
+	if (currentRound->GetCurrentBet() < 12 && currentRound->GetPoints().at(0) < 11)
+	{
+		if (currentRound->GetCurrentBet() == 1) {
+			buttonTruco.SetWindowTextW(L"Truco");
+		}
+		else {
+			//Change button label when Truco was already called
+			buttonTruco.SetWindowTextW(L"Raise Bet");
+		}
+		buttonTruco.ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		buttonTruco.ShowWindow(SW_HIDE);
+	}
+}
+
+void CG6TrucoView::OnButtonTrucoClicked()
 {
 	controller.RaiseBet();
-	//buttonTruco.SetWindowTextW(L"TESTE");
 }
 
 void CG6TrucoView::OnButtonNewGameClicked()
