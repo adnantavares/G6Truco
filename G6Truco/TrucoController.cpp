@@ -46,7 +46,32 @@ void TrucoController::StartGame() {
 	RaiseActivePlayerChangedEvent(round->GetActivePlayer());
 }
 
-//True if player is a HumanPlayer
+void TrucoController::StartRoundHandlerThread()
+{
+	// Creates handler thread to update UI and start another round
+	roundHandlerThread = std::thread([this]() {
+		std::unique_lock l(roundMutex);
+
+		while (true)
+		{
+			roundConditionVariable.wait(l);
+
+			int winnerTeamIndex = round->GetWinnerTeam();
+			int currentBet = round->GetCurrentBet();
+			gamePoints[winnerTeamIndex] += currentBet;
+			firstPlayer = (firstPlayer + 1) % 4;
+			round->StartRound(firstPlayer);
+		}
+		});
+
+	roundHandlerThread.detach();
+}
+
+void TrucoController::NotifyRoundOver()
+{
+	roundConditionVariable.notify_one();
+}
+
 bool TrucoController::IsActivePlayerHuman()
 {
 	return round->IsHumanPlayer();
@@ -68,7 +93,7 @@ std::array<int, 2> TrucoController::GetGamePoints() {
 	return gamePoints;
 }
 
-#pragma region Set events
+#pragma region Event listeners
 void TrucoController::ActivePlayerChangedEventListener(std::function<void(Player*)> callback) {
 	activePlayerChangedEvent = callback;
 }
@@ -79,27 +104,7 @@ void TrucoController::RoundInformationChangedEventListener(std::function<void(Ro
 }
 #pragma endregion
 
-#pragma region Trigger events
-void TrucoController::StartRoundHandlerThread()
-{
-	// Creates handler thread to update UI and start another round
-	roundHandlerThread = std::thread([this]() {
-		std::unique_lock l(roundMutex);
-
-		while (true)
-		{
-			roundConditionVariable.wait(l);
-
-			int winnerTeamIndex = round->GetWinnerTeam();
-			int currentBet = round->GetCurrentBet();
-			gamePoints[winnerTeamIndex] += currentBet;
-			firstPlayer = (firstPlayer + 1) % 4;
-			round->StartRound(firstPlayer);
-		}
-	});
-
-	roundHandlerThread.detach();
-}
+#pragma region Event Triggers
 void TrucoController::RaiseActivePlayerChangedEvent(Player* currentPlayer)
 {
 	if (activePlayerChangedEvent) {
@@ -107,12 +112,3 @@ void TrucoController::RaiseActivePlayerChangedEvent(Player* currentPlayer)
 	}
 }
 #pragma endregion
-
-#pragma region Event listeners
-void TrucoController::NotifyRoundOver()
-{
-	roundConditionVariable.notify_one();
-}
-#pragma endregion
-
-

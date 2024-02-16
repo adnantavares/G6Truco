@@ -11,9 +11,10 @@ private:
     std::map<Card::Rank, int> rankStrength; // Maps card ranks to their strengths
     std::map<Card::Suit, double> suitStrength; // Maps card suits to their strengths for manilhas
 
+    void InitializeStrengthMaps(); // Initializes the strength values for ranks and suits
+
 public:
     CardStrengthCalculator(Card viraCard); // Constructor takes the vira card
-    void InitializeStrengthMaps(); // Initializes the strength values for ranks and suits
     Card::Rank GetManilhaRank() const; // Determines the rank of the manilha based on the vira
     double GetCardStrength(const Card& card) const; // Returns the strength of a given card
 };

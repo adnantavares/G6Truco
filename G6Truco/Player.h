@@ -15,17 +15,19 @@ protected:
     CString playerName;
     int selectedCardIndex = -1;
 
+    void SetPlayerName(const CString& name);
+
 public:
     Player(PlayerType type);
     ~Player() = default;
     PlayerType playerType;
+
     void RemoveSelectedCard();
     virtual Card PlayCard() = 0;
     
 #pragma region Getters and Setters
     void SetHand(std::vector<Card>& newHand);
     std::vector<Card> GetHand() const;
-    void SetPlayerName(const CString& name);
     CString GetPlayerName() const;
     void SetSelectCardIndex(int index);
     int GetSelectCardIndex() const;

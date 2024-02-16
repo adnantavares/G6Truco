@@ -16,8 +16,8 @@ Round::Round()
 
 void Round::OnRaiseBet(Player* player, int betDecision) {
 	if (currentBet == betDecision) {
-		// CPU only accepted truco
-		// Truco button must be disabled
+		// CPU only accepted Truco request
+		// Truco button must be disabled on UI
 		currentTrucoCall = TrucoCallType::CPU_ACCEPTED;
 	}
 	else if (currentBet < betDecision) {
@@ -28,6 +28,7 @@ void Round::OnRaiseBet(Player* player, int betDecision) {
 	}
 	else
 	{
+		// CPU denied Truco request
 		DenyBet(player);
 	}
 	
@@ -79,7 +80,7 @@ void Round::NextPlayer()
 	}
 }
 
-bool Round::NewCardIsStronger(const Card& newCard, const Card& currentWinningCard)
+bool Round::IsNewCardStronger(const Card& newCard, const Card& currentWinningCard)
 {
 	CardStrengthCalculator strengthCalculator(vira);
 	double newCardStrength = strengthCalculator.GetCardStrength(newCard);
@@ -163,7 +164,6 @@ void Round::NotifyPlayingAction()
 
 void Round::RaiseBet()
 {
-	
 	NextBet();
 	// Notify one of the CPU players, who will decide to raise the bet, accept current one or leave the round
 	CPUPlayer::NotifyPlayers(false);
@@ -208,6 +208,44 @@ void Round::NextBet()
 	if (it != possibleBets.end() && std::next(it) != possibleBets.end()) {
 		// Next bet, if it is not the last one.
 		currentBet = *(std::next(it));
+	}
+}
+
+bool Round::IsRoundOver()
+{
+	auto it = std::max_element(points.begin(), points.end()); // iterator to the team with more points
+	int teamIndex = std::distance(points.begin(), it); // 0 is human team, 1 is CPU team
+	int teamPoints = *it;
+
+	if (teamPoints < 2) {
+		isRoundOver = false;
+	}
+	else {
+		roundWinnerTeam = teamIndex;
+		isRoundOver = true;
+		currentTrucoCall = TrucoCallType::NONE;
+		RaiseRoundOverEvent();
+	}
+
+	return isRoundOver;
+}
+
+bool Round::IsHumanPlayer()
+{
+	Player* activePlayer = GetActivePlayer();
+	return IsHumanPlayer(activePlayer);
+}
+
+bool Round::IsHumanPlayer(Player* player)
+{
+	HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(player);
+	return humanPlayer != nullptr;
+}
+
+void Round::DefineWinningCard(Card playedCard)
+{
+	if (!winningCard || IsNewCardStronger(playedCard, winningCard->second)) {
+		winningCard = std::make_optional(std::make_pair(players[activePlayerIndex].get(), playedCard));
 	}
 }
 
@@ -265,25 +303,6 @@ void Round::SetPlayers(std::array<std::unique_ptr<Player>, 4>&& allPlayers)
 	}
 }
 
-bool Round::IsRoundOver()
-{
-	auto it = std::max_element(points.begin(), points.end()); // iterator to the team with more points
-	int teamIndex = std::distance(points.begin(), it); // 0 is human team, 1 is CPU team
-	int teamPoints = *it;
-
-	if (teamPoints < 2) {
-		isRoundOver = false;
-	}
-	else {
-		roundWinnerTeam = teamIndex;
-		isRoundOver = true;	
-		currentTrucoCall = TrucoCallType::NONE;
-		RaiseRoundOverEvent();
-	}
-
-	return isRoundOver;
-}
-
 int Round::GetCurrentBet()
 {
 	return currentBet;
@@ -303,25 +322,6 @@ void Round::SetCurrentTrucoCall(int type)
 {
 	currentTrucoCall = type;
 	RaiseRoundInformationChangedEvent();
-}
-
-bool Round::IsHumanPlayer()
-{
-	Player* activePlayer = GetActivePlayer();
-	return IsHumanPlayer(activePlayer);
-}
-
-bool Round::IsHumanPlayer(Player* player)
-{
-	HumanPlayer* humanPlayer = dynamic_cast<HumanPlayer*>(player);
-	return humanPlayer != nullptr;
-}
-
-void Round::DefineWinningCard(Card playedCard)
-{
-	if (!winningCard || NewCardIsStronger(playedCard, winningCard->second)) {
-		winningCard = std::make_optional(std::make_pair(players[activePlayerIndex].get(), playedCard));
-	}
 }
 
 std::vector<int> Round::GetPoints()

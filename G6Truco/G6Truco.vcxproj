@@ -195,7 +195,6 @@
     <ClInclude Include="G6Truco.h" />
     <ClInclude Include="G6TrucoDoc.h" />
     <ClInclude Include="G6TrucoView.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="TrucoController.h" />
     <ClInclude Include="MainFrm.h" />
@@ -213,7 +212,6 @@
     <ClCompile Include="G6Truco.cpp" />
     <ClCompile Include="G6TrucoDoc.cpp" />
     <ClCompile Include="G6TrucoView.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="pch.cpp">

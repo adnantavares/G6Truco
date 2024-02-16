@@ -17,8 +17,12 @@ private:
     std::array<int, 2> gamePoints;
 
     void StartRoundHandlerThread();
-    void RaiseActivePlayerChangedEvent(Player* currentPlayer);
     void NotifyRoundOver();
+    bool IsActivePlayerHuman();
+
+#pragma region Events Triggers
+    void RaiseActivePlayerChangedEvent(Player* currentPlayer);
+#pragma endregion
 
 public:
     TrucoController();
@@ -27,17 +31,12 @@ public:
     void DenyBet();
     void AcceptBet();
     void StartGame();
-    bool IsActivePlayerHuman();
     bool TrySetSelectedCardIndex(int index);
     std::array<int, 2> GetGamePoints();
 
-#pragma region Events
-#pragma region Round event listeners
+#pragma region Event listeners
     void ActivePlayerChangedEventListener(std::function<void(Player*)> callback);
     void RoundInformationChangedEventListener(std::function<void(Round*)> callback);
 #pragma endregion
-
-#pragma endregion
-
 };
 #endif //TRUCOCONTROLLER_H

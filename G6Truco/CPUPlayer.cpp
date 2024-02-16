@@ -24,9 +24,11 @@ std::unique_ptr<CPUPlayer> CPUPlayer::Create(const CString& name, Round* round)
 void CPUPlayer::NotifyPlayers(bool notifyAll)
 {
 	if (notifyAll) {
+		// Notifies all CPU Player threads for playing action
 		playerConditionVariable.notify_all();
 	}
 	else {
+		// Notifies only one CPU Player thread to randomly decide about Truco request
 		playerConditionVariable.notify_one();
 	}
 }
@@ -123,11 +125,11 @@ int CPUPlayer::DecideBetAcceptance()
 	int decisionValue = distrib(gen);
 
 	switch (decisionValue) {
-	case 0: //reject Truco
+	case 0: // Reject Truco
 		return INT_MIN;
-	case 1: //raise bet
+	case 1: // Raise bet
 		return INT_MAX;
-	case 2: //accept truco
+	case 2: // Accept truco
 		return lastCurrentBet;
 	default:
 		return lastCurrentBet;
@@ -138,14 +140,16 @@ void CPUPlayer::TriggerPlayIntention(Round* round)
 {
 	CPUPlayer* cpuPlayer = round->GetCPUActivePlayer();
 
-	//If next player is this bot player, play its card automatically.
+	// If next player is this bot player, play its card automatically.
 	if (cpuPlayer != nullptr && cpuPlayer->GetPlayerName() == this->GetPlayerName())
 	{
-		this->SetWinningCard(round->GetWinningCard()); //Set winningCard in order to CPU player knows witch card to play
+		this->SetWinningCard(round->GetWinningCard()); // Sets winningCard in order to CPU player knows which card to play
 
-		// Waits Human Player card being invalidated, before playing CPU Player card
+		// Waits Human Player card being invalidated (UI updated), before playing CPU Player card
+		// This delay is also useful to give the application user a sensation that CPU is calculating its next move
 		std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(PLAY_INTERVAL));
 
+		// Sends signal to Round Playing thread in order to make it play the card
 		round->NotifyPlayingAction();
 	}
 }
@@ -161,7 +165,11 @@ void CPUPlayer::MonitorRoundState(Round* round)
 			AnalyzeCurrentBet(round);
 			TriggerPlayIntention(round);
 
+			// A CPU Thread acquires mutex lock until it waits
+			// When it is waiting, mutex is unlocked and the next thread can execute loop
 			playerConditionVariable.wait(l);
+			// After the condition variable notify all threads, they wake up, but the first to do it acquires the lock and execute the loop
+			// When it starts waiting again, the second thread will be able to acquire mutex lock and perform the loop
 		}
 	});
 
@@ -179,4 +187,3 @@ void CPUPlayer::RaiseBetEvent(int bet) {
 	}
 }
 #pragma endregion
-

@@ -16,8 +16,6 @@ void Player::RemoveSelectedCard()
 	selectedCardIndex = -1;
 }
 
-
-
 #pragma region Getters and Setters
 void Player::SetHand(std::vector<Card>& newHand)
 {
