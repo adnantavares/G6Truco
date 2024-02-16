@@ -277,6 +277,7 @@ bool Round::IsRoundOver()
 	else {
 		roundWinnerTeam = teamIndex;
 		isRoundOver = true;	
+		currentTrucoCall = TrucoCallType::NONE;
 		RaiseRoundOverEvent();
 	}
 
@@ -296,6 +297,12 @@ void Round::SetCurrentBet(int bet)
 int Round::GetCurrentTrucoCall()
 {
 	return currentTrucoCall;
+}
+
+void Round::SetCurrentTrucoCall(int type)
+{
+	currentTrucoCall = type;
+	RaiseRoundInformationChangedEvent();
 }
 
 bool Round::IsHumanPlayer()

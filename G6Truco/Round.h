@@ -69,6 +69,7 @@ public:
     int GetWinnerTeam() const; // Determines the winner of the round.
     void SetCurrentBet(int bet);
     int GetCurrentTrucoCall();
+    void SetCurrentTrucoCall(int type);
     bool IsHumanPlayer();
     bool IsHumanPlayer(Player* player);
     void DefineWinningCard(Card playedCard);

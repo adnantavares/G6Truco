@@ -25,6 +25,7 @@ public:
     void PlayCard();
     void RaiseBet();
     void DenyBet();
+    void AcceptBet();
     void StartGame();
     bool IsActivePlayerHuman();
     bool TrySetSelectedCardIndex(int index);

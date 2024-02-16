@@ -405,6 +405,7 @@ void CG6TrucoView::OnButtonPlayCardClicked()
 
 void CG6TrucoView::OnButtonAcceptTrucoClicked()
 {
+	controller.AcceptBet();
 }
 
 void CG6TrucoView::OnButtonRejectTrucoClicked()

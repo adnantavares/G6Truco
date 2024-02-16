@@ -35,6 +35,11 @@ void TrucoController::DenyBet()
 	round->DenyBet();
 }
 
+void TrucoController::AcceptBet()
+{
+	round->SetCurrentTrucoCall(Round::TrucoCallType::NONE);
+}
+
 void TrucoController::StartGame() {
 	gamePoints.fill(0);
 	round->StartRound(firstPlayer);
