@@ -18,7 +18,8 @@ class CG6TrucoView : public CView
 private:
 	TrucoController controller;
 
-	CBrush backgroundBrush;
+	CBrush backgroundTable;
+	CBrush backgroundScoreBoard;
 	std::array<CRect, 3> cardArea;
 	int cardClicked = 0;
 	BOOL hideCard = false;
@@ -29,21 +30,10 @@ private:
 	bool start = false;
 
 	CDC memDCBack;
-	CDC memDCCard1;
-	CDC memDCCard2;
-	CDC memDCCard3;
 	CDC memDCDeck;
-
 	CImage imageCardBack;
-	CImage imageCard1;
-	CImage imageCard2;
-	CImage imageCard3;
 	CImage imageDeck;
-
 	CBitmap bmpBack;
-	CBitmap bmpCard1;
-	CBitmap bmpCard2;
-	CBitmap bmpCard3;
 	CBitmap bmpDeck;
 
 	CButton buttonTruco;
@@ -69,7 +59,6 @@ private:
 	Round* currentRound;
 
 #pragma region Events
-	void OnActivePlayerChangedEvent(Player* player);
 	void OnRoundInformationsChangedEvent(Round* currentRoundInformations);
 #pragma endregion
 

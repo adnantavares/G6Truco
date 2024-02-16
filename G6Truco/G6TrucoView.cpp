@@ -41,13 +41,17 @@ END_MESSAGE_MAP()
 
 CG6TrucoView::CG6TrucoView() noexcept
 {
-	backgroundBrush.CreateSolidBrush(RGB(0, 81, 44));
+	//Init colors
+	backgroundTable.CreateSolidBrush(RGB(0, 81, 44));
+	backgroundScoreBoard.CreateSolidBrush(RGB(255, 255, 255));
 
+	//Init back card image
 	memDCBack.CreateCompatibleDC(NULL);
 	imageCardBack.Load(_T("res\\cards\\back.png"));
 	bmpBack.Attach(imageCardBack.Detach());
 	CBitmap* pOldBack = memDCBack.SelectObject(&bmpBack);
 
+	//Init deck card image
 	memDCDeck.CreateCompatibleDC(NULL);
 	imageDeck.Load(_T("res\\cards\\deck.png"));
 	bmpDeck.Attach(imageDeck.Detach());
@@ -59,6 +63,7 @@ CG6TrucoView::CG6TrucoView() noexcept
 			cardsMap[a][b] = new CDC;
 			cardsMap[a][b]->CreateCompatibleDC(NULL);
 			CImage imageCard;
+			//Get the resource path according to the suit and rank initials of the card
 			std::string pathCard = "res\\cards\\" + cardsNameMap[a][b] + ".png";
 			std::wstring wide_string(pathCard.begin(), pathCard.end());
 			imageCard.Load(wide_string.c_str());
@@ -69,7 +74,6 @@ CG6TrucoView::CG6TrucoView() noexcept
 	}
 
 #pragma region Setting events
-	controller.ActivePlayerChangedEventListener(std::bind(&CG6TrucoView::OnActivePlayerChangedEvent, this, std::placeholders::_1));
 	controller.RoundInformationChangedEventListener(std::bind(&CG6TrucoView::OnRoundInformationsChangedEvent, this, std::placeholders::_1));
 #pragma endregion
 
@@ -81,10 +85,6 @@ CG6TrucoView::~CG6TrucoView()
 
 //Use the following events to update the view informations
 #pragma region Events
-
-void CG6TrucoView::OnActivePlayerChangedEvent(Player* player) {
-}
-
 void CG6TrucoView::OnRoundInformationsChangedEvent(Round* currentRoundInformations) {
 	currentRound = currentRoundInformations;
 	Invalidate();
@@ -97,7 +97,6 @@ BOOL CG6TrucoView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // CG6TrucoView drawing
-
 void CG6TrucoView::OnDraw(CDC* pDC)
 {
 	CG6TrucoDoc* pDoc = GetDocument();
@@ -105,26 +104,32 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	// TODO: add draw code for native data here
+	//Draw Table background
 	CRect rect;
 	GetClientRect(&rect);
-	pDC->FillRect(&rect, &backgroundBrush);
+	pDC->FillRect(&rect, &backgroundTable);
+
+	//When Game is over, show the New Game screen with the last scoreboard
 	if (controller.GetGamePoints()[0] >= 12 || controller.GetGamePoints()[1] >= 12) {
 		start = false;
 		DrawScoreBoard(pDC);
 	}
+	// Ongoing game - Draw the cards
 	if (start) {
 		DrawCards(pDC);
 		DrawScoreBoard(pDC);
 	}
 
+	//Draw deck card
 	pDC->BitBlt(820, 400, cardH, cardW, &memDCDeck, 0, 0, SRCCOPY);
 
 	UpdateButtons();
 }
 
-void CG6TrucoView::DrawOtherPlayerCards(CDC* pDC, Player* p, int x, int y) {
+void CG6TrucoView::DrawOtherPlayerCards(CDC* pDC, Player* p, int x, int y) 
+{
 	CDC* card;
+	pDC->TextOut(x + 80, y + 250, p->GetPlayerName());
 	for (int c = 0; c < p->GetHand().size(); c++) {
 		if (c == p->GetSelectCardIndex()) {
 			card = cardsMap[p->GetHand().at(c).GetSuit()][p->GetHand().at(c).GetRank()];
@@ -142,6 +147,7 @@ void CG6TrucoView::DrawCurrentPlayerCards(CDC* pDC, Player* p)
 	int x = 800;
 	int y;
 	CDC* card = &memDCBack;
+	pDC->TextOut(880, 900, p->GetPlayerName());
 	for (int c = 0; c < p->GetHand().size(); c++) {
 		y = 650;
 		if (p->playerType == Player::PlayerType::Human) {
@@ -161,6 +167,11 @@ void CG6TrucoView::DrawCurrentPlayerCards(CDC* pDC, Player* p)
 
 void CG6TrucoView::DrawScoreBoard(CDC* pDC)
 {
+	//Draw Scoreboard area
+	pDC->FillRect(CRect(1350, 30, 1750, 220), &backgroundScoreBoard);
+	pDC->TextOut(1500, 40, L"Scoreboard");
+
+	//Draw Round Points
 	pDC->TextOut(1400, 70, L"Round Points");
 	std::string score = "Team Human: ";
 	score.append(std::to_string(currentRound->GetPoints().at(0)));
@@ -169,13 +180,19 @@ void CG6TrucoView::DrawScoreBoard(CDC* pDC)
 	score.append(std::to_string(currentRound->GetPoints().at(1)));
 	pDC->TextOut(1400, 130, CString(score.c_str()));
 
-	pDC->TextOut(1600, 70, L"Game Points");
+	//Draw Game Points
+	pDC->TextOut(1580, 70, L"Game Points");
 	score = "Team Human: ";
 	score.append(std::to_string(controller.GetGamePoints()[0]));
-	pDC->TextOut(1600, 100, CString(score.c_str()));
+	pDC->TextOut(1580, 100, CString(score.c_str()));
 	score = "Team Bot: ";
 	score.append(std::to_string(controller.GetGamePoints()[1]));
-	pDC->TextOut(1600, 130, CString(score.c_str()));
+	pDC->TextOut(1580, 130, CString(score.c_str()));
+
+	//Draw Current Bet
+	std::string bet = "Current Bet: ";
+	bet.append(std::to_string(currentRound->GetCurrentBet()));
+	pDC->TextOut(1400, 180, CString(bet.c_str()));
 }
 
 void CG6TrucoView::DrawCards(CDC* pDC) {
@@ -184,65 +201,49 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 		players.push_back(currentRound->GetAllPlayers().at(a).get());
 	}
 	int n = currentRound->GetActivePlayerIndex();
+	//Rotate the players in order to show the active player always on the bottom of the table
 	std::rotate(players.begin(), players.begin() + n, players.end());
 
+	//Draw Vira Card
 	pDC->BitBlt(860, 320, cardW, cardH, cardsMap[currentRound->GetViraCard().GetSuit()][currentRound->GetViraCard().GetRank()], 0, 0, SRCCOPY);
 
-	std::string bet = "Current Bet: ";
-	bet.append(std::to_string(currentRound->GetCurrentBet()));
-	SetStatusBarText(CString(bet.c_str()));
 
+	//Draw Player Left
 	DrawOtherPlayerCards(pDC, players.at(1), 40, 350);
-	pDC->TextOut(140, 600, players.at(1)->GetPlayerName());
-
+	//Draw Player Top
 	DrawOtherPlayerCards(pDC, players.at(2), 800, 10);
-	pDC->TextOut(880, 260, players.at(2)->GetPlayerName());
-
+	//Draw Player Right
 	DrawOtherPlayerCards(pDC, players.at(3), 1600, 350);
-	pDC->TextOut(1700, 600, players.at(3)->GetPlayerName());
-
-	pDC->TextOut(880, 900, players.at(0)->GetPlayerName());
+	//Draw Player Bottom (Current Player)
 	DrawCurrentPlayerCards(pDC, players.at(0));
 }
 
 void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (!currentRound->IsHumanPlayer()) {
+	//If its not a Human turn or game did not start, ignore the click
+	if (!start || !currentRound->IsHumanPlayer() ) {
 		return;
 	}
 	Player* p = currentRound->GetActivePlayer();
-	if (cardArea.at(2).PtInRect(point) && p->GetHand().size() >= 3)
-	{
-		if (cardClicked == 3) {
-			cardClicked = 0;
+	//Check if user clicked inside the Card Rect
+	// Since the cards are overlapping, starts checking the top card area
+	//Left click select the card in the current round
+	//If user clicks in a selected card, it will deselect it
+	for (int c = p->GetHand().size(); c > 0; c--) {
+		if (cardArea.at(c - 1).PtInRect(point)) {
+			if (cardClicked == c) {
+				cardClicked = 0;
+			}
+			else {
+				cardClicked = c;
+			}
+			hideCard = false;
+			Invalidate();
+			break;
 		}
-		else {
-			cardClicked = 3;
-		}
-		hideCard = false;
-		Invalidate();
-	}
-	else if (cardArea.at(1).PtInRect(point) && p->GetHand().size() >= 2) {
-		if (cardClicked == 2) {
-			cardClicked = 0;
-		}
-		else {
-			cardClicked = 2;
-		}
-		hideCard = false;
-		Invalidate();
-	}
-	else if (cardArea.at(0).PtInRect(point) && p->GetHand().size() >= 1) {
-		if (cardClicked == 1) {
-			cardClicked = 0;
-		}
-		else {
-			cardClicked = 1;
-		}
-		hideCard = false;
-		Invalidate();
 	}
 	CView::OnLButtonDown(nFlags, point);
+	
 }
 
 void CG6TrucoView::TryPlayCard(int cardIndex)
@@ -253,32 +254,28 @@ void CG6TrucoView::TryPlayCard(int cardIndex)
 
 void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	if (!currentRound->IsHumanPlayer()) {
+	//If its not a Human turn or game did not start, ignore the click
+	if (!start || !currentRound->IsHumanPlayer()) {
 		return;
 	}
 	Player* p = currentRound->GetActivePlayer();
-	if (cardArea.at(2).PtInRect(point) && p->GetHand().size() >= 3)
-	{
-		cardClicked = 3;
-		hideCard = true;
-		Invalidate();
-	}
-	else if (cardArea.at(1).PtInRect(point) && p->GetHand().size() >= 2) {
-		cardClicked = 2;
-		hideCard = true;
-		Invalidate();
-	}
-	else if (cardArea.at(0).PtInRect(point) && p->GetHand().size() >= 1) {
-		cardClicked = 1;
-		hideCard = true;
-		Invalidate();
+	//Check if user clicked inside the Card Rect
+	// Since the cards are overlapping, starts checking the top card area
+	//Right click select but hide the card in the current round
+	for (int c = p->GetHand().size(); c > 0; c--) {
+		if (cardArea.at(c - 1).PtInRect(point)) {
+			cardClicked = c;
+			hideCard = true;
+			Invalidate();
+			break;
+		}
 	}
 	CView::OnLButtonDown(nFlags, point);
 }
 
 void CG6TrucoView::OnInitialUpdate()
 {
-	//Create Button
+	//Create Buttons
 	buttonNewGame.Create(L"New Game", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, CRect(0, 0, 0, 0), this, BUTTONNEWGAMEID);
 	buttonNewGame.MoveWindow(850, 650, 180, 80);
 
