@@ -6,18 +6,23 @@ TrucoController::TrucoController()
 	firstPlayer = 0;
 	std::array<std::unique_ptr<Player>, 4> players;
 
-	round = std::make_unique<Round>();
+	try {
+		round = std::make_unique<Round>();
 
-	// Criação de jogadores humanos e CPUs.
-	players[0] = HumanPlayer::Create(L"HUMAN-Pedro");
-	players[1] = CPUPlayer::Create(L"BOT-Priscila", round.get());
-	players[2] = HumanPlayer::Create(L"HUMAN-Adnan");
-	players[3] = CPUPlayer::Create(L"BOT-Danilo", round.get());
+		// Criação de jogadores humanos e CPUs.
+		players[0] = HumanPlayer::Create(L"HUMAN-Pedro");
+		players[1] = CPUPlayer::Create(L"BOT-Priscila", round.get());
+		players[2] = HumanPlayer::Create(L"HUMAN-Adnan");
+		players[3] = CPUPlayer::Create(L"BOT-Danilo", round.get());
 
-	round->SetPlayers(std::move(players));
-	round->RoundOverEventListener(std::bind(&TrucoController::NotifyRoundOver, this));
-	
-	StartRoundHandlerThread();
+		round->SetPlayers(std::move(players));
+		round->RoundOverEventListener(std::bind(&TrucoController::NotifyRoundOver, this));
+
+		StartRoundHandlerThread();
+	}
+	catch (const std::exception& e) {
+		throw PlayerCreationException("Failed to initialize TrucoController: " + std::string(e.what()));
+	}
 }
 
 void TrucoController::PlayCard()

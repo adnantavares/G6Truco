@@ -5,6 +5,7 @@
 #include "HumanPlayer.h"
 #include "CPUPlayer.h"
 #include <iostream>
+#include "PlayerCreationException.cpp"
 
 class TrucoController {
 private:

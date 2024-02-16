@@ -209,6 +209,7 @@
     <ClCompile Include="CardStrengthCalculator.cpp" />
     <ClCompile Include="CPUPlayer.cpp" />
     <ClCompile Include="Deck.cpp" />
+    <ClCompile Include="PlayerCreationException.cpp" />
     <ClCompile Include="G6Truco.cpp" />
     <ClCompile Include="G6TrucoDoc.cpp" />
     <ClCompile Include="G6TrucoView.cpp" />
