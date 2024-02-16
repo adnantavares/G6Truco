@@ -19,13 +19,13 @@ private:
 	TrucoController controller;
 
 	CBrush backgroundBrush;
-	CRect m_Card1Rect;
-	CRect m_Card2Rect;
-	CRect m_Card3Rect;
+	std::array<CRect, 3> cardArea;
 	int cardClicked = 0;
 	BOOL hideCard = false;
 	int cardH = 240;
 	int cardW = 165;
+	int xOffset = 60;
+	int yOffset = 30;
 	bool start = false;
 
 	CDC memDCBack;
@@ -53,16 +53,13 @@ private:
 	CButton buttonPlayCard;
 
 	void CreateButton(CButton& button, LPCTSTR contentText, CRect rectButton, int idButton);
-	//CBitmap* pOldBack;
-	//CBitmap* pOldCard1;
-	//CBitmap* pOldCard2;
-	//CBitmap* pOldCard3;
-	//CBitmap* pOldBmpDeck;
 	void DrawCards(CDC* pDC);
-	void DrawPlayerCards(CDC* pDC, Player* p, int x, int y);
+	void DrawOtherPlayerCards(CDC* pDC, Player* p, int x, int y);
+	void DrawCurrentPlayerCards(CDC* pDC, Player* p);
 	void DrawScoreBoard(CDC* pDC);
 	void UpdateButtons();
 	void SetStatusBarText(const CString& strText);
+	void ShowTrucoButton();
 	const std::string cardsNameMap[4][10] = { 
 		{"c2","c3","c4","c5","c6","c7","cj","cq","ck","ca"},
 		{"e2","e3","e4","e5","e6","e7","ej","eq","ek","ea"},
@@ -87,12 +84,7 @@ public:
 
 	// Operations
 public:
-	void drawGame(const Game& game); // Draws the current state of the game.
-	void updateView(); // Updates the view with changes in the game state.
-	void showBetOptions(); // Shows betting options to the player.
-	void OnBnClickedRaiseBet();
-	void CreateButton();
-	void TryPlayCard(int cardIndex);
+	void TryPlayCard(int cardIndex); //Call the Controller to start the Play Card action
 
 	// Overrides
 public:
