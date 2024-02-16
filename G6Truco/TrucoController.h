@@ -4,6 +4,7 @@
 #include "CardStrengthCalculator.h"
 #include "HumanPlayer.h"
 #include "CPUPlayer.h"
+#include <iostream>
 
 class TrucoController {
 private:

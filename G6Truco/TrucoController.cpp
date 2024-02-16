@@ -80,13 +80,19 @@ bool TrucoController::IsActivePlayerHuman()
 bool TrucoController::TrySetSelectedCardIndex(int index)
 {
 	if (IsActivePlayerHuman()) {
-		auto* humanPlayer = dynamic_cast<HumanPlayer*>(round->GetActivePlayer());
-		if (humanPlayer) {
+		try {
+			auto* humanPlayer = dynamic_cast<HumanPlayer*>(round->GetActivePlayer());
+			if (!humanPlayer) {
+				throw std::runtime_error("Failed to convert the type of the active player to HumanPlayer.");
+			}
 			humanPlayer->SetSelectCardIndex(index);
 			return true;
 		}
+		catch (const std::runtime_error& e) {
+			std::cerr << "Error trying to set the selected card index: " << e.what() << std::endl;
+			return false;
+		}
 	}
-	return false;
 }
 
 std::array<int, 2> TrucoController::GetGamePoints() {
