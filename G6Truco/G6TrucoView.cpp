@@ -41,9 +41,7 @@ END_MESSAGE_MAP()
 
 CG6TrucoView::CG6TrucoView() noexcept
 {
-	// TODO: add construction code here
 	backgroundBrush.CreateSolidBrush(RGB(0, 81, 44));
-
 
 	memDCBack.CreateCompatibleDC(NULL);
 	imageCardBack.Load(_T("res\\cards\\back.png"));
@@ -55,7 +53,7 @@ CG6TrucoView::CG6TrucoView() noexcept
 	bmpDeck.Attach(imageDeck.Detach());
 	CBitmap* pOldBmpDeck = memDCDeck.SelectObject(&bmpDeck);
 
-	//Initialize Image Matrix will all Deck
+	//Initialize Image Matrix with all Deck cards in order to speed up OnDraw process
 	for (int a = 0; a < 4; a++) {
 		for (int b = 0; b < 10; b++) {
 			cardsMap[a][b] = new CDC;
@@ -85,33 +83,16 @@ CG6TrucoView::~CG6TrucoView()
 #pragma region Events
 
 void CG6TrucoView::OnActivePlayerChangedEvent(Player* player) {
-	//player->GetPlayerName();
-	//player->GetHand();
 }
 
 void CG6TrucoView::OnRoundInformationsChangedEvent(Round* currentRoundInformations) {
-	//currentRoundInformations->GetViraCard();
-	//currentRoundInformations->GetAllPlayers();
-	//currentRoundInformations->GetActivePlayer();
-	//currentRoundInformations->GetActivePlayer()->GetPlayerName();
 	currentRound = currentRoundInformations;
-	//currentPlayers = RotatePlayers(currentRound->GetAllPlayers(), currentRound->GetActivePlayerIndex());
 	Invalidate();
 }
 #pragma endregion
 
-
-//TODO: Replace this to MVC pattern
-void CG6TrucoView::OnBnClickedRaiseBet()
-{
-
-}
-
 BOOL CG6TrucoView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
 	return CView::PreCreateWindow(cs);
 }
 
@@ -142,15 +123,39 @@ void CG6TrucoView::OnDraw(CDC* pDC)
 	UpdateButtons();
 }
 
-void CG6TrucoView::DrawPlayerCards(CDC* pDC, Player* p, int x, int y) {
+void CG6TrucoView::DrawOtherPlayerCards(CDC* pDC, Player* p, int x, int y) {
+	CDC* card;
 	for (int c = 0; c < p->GetHand().size(); c++) {
 		if (c == p->GetSelectCardIndex()) {
-			pDC->BitBlt(x, y, cardW, cardH, cardsMap[p->GetHand().at(c).GetSuit()][p->GetHand().at(c).GetRank()], 0, 0, SRCCOPY);
+			card = cardsMap[p->GetHand().at(c).GetSuit()][p->GetHand().at(c).GetRank()];
 		}
 		else {
-			pDC->BitBlt(x, y, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
+			card = &memDCBack;
 		}
-		x += 60;
+		pDC->BitBlt(x, y, cardW, cardH, card, 0, 0, SRCCOPY);
+		x += xOffset;
+	}
+}
+
+void CG6TrucoView::DrawCurrentPlayerCards(CDC* pDC, Player* p)
+{
+	int x = 800;
+	int y;
+	CDC* card = &memDCBack;
+	for (int c = 0; c < p->GetHand().size(); c++) {
+		y = 650;
+		if (p->playerType == Player::PlayerType::Human) {
+			card = cardsMap[p->GetHand().at(c).GetSuit()][p->GetHand().at(c).GetRank()];
+			if (cardClicked == (c + 1)) {
+				y -= yOffset;
+				if (hideCard) {
+					card = &memDCBack;
+				}
+			}
+		}
+		pDC->BitBlt(x, y, cardW, cardH, card, 0, 0, SRCCOPY);
+		cardArea.at(c) = CRect(x, y, x + cardW, y + cardH);
+		x += xOffset;
 	}
 }
 
@@ -187,62 +192,17 @@ void CG6TrucoView::DrawCards(CDC* pDC) {
 	bet.append(std::to_string(currentRound->GetCurrentBet()));
 	SetStatusBarText(CString(bet.c_str()));
 
-	DrawPlayerCards(pDC, players.at(1), 40, 350);
+	DrawOtherPlayerCards(pDC, players.at(1), 40, 350);
 	pDC->TextOut(140, 600, players.at(1)->GetPlayerName());
 
-	DrawPlayerCards(pDC, players.at(2), 800, 10);
+	DrawOtherPlayerCards(pDC, players.at(2), 800, 10);
 	pDC->TextOut(880, 260, players.at(2)->GetPlayerName());
 
-	DrawPlayerCards(pDC, players.at(3), 1600, 350);
+	DrawOtherPlayerCards(pDC, players.at(3), 1600, 350);
 	pDC->TextOut(1700, 600, players.at(3)->GetPlayerName());
 
 	pDC->TextOut(880, 900, players.at(0)->GetPlayerName());
-	if (players.at(0)->GetHand().size() >= 1) {
-		if (cardClicked == 1) {
-			if (hideCard) {
-				pDC->BitBlt(800, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
-			}
-			else {
-				pDC->BitBlt(800, 620, cardW, cardH, cardsMap[players.at(0)->GetHand().at(0).GetSuit()][players.at(0)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-			}
-			m_Card1Rect = CRect(800, 620, 800 + cardW, 620 + cardH);
-		}
-		else {
-			pDC->BitBlt(800, 650, cardW, cardH, cardsMap[players.at(0)->GetHand().at(0).GetSuit()][players.at(0)->GetHand().at(0).GetRank()], 0, 0, SRCCOPY);
-			m_Card1Rect = CRect(800, 650, 800 + cardW, 650 + cardH);
-		}
-		if (players.at(0)->GetHand().size() >= 2) {
-			if (cardClicked == 2) {
-				if (hideCard) {
-					pDC->BitBlt(860, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
-				}
-				else {
-					pDC->BitBlt(860, 620, cardW, cardH, cardsMap[players.at(0)->GetHand().at(1).GetSuit()][players.at(0)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-				}
-				m_Card2Rect = CRect(860, 620, 860 + cardW, 620 + cardH);
-			}
-			else {
-				pDC->BitBlt(860, 650, cardW, cardH, cardsMap[players.at(0)->GetHand().at(1).GetSuit()][players.at(0)->GetHand().at(1).GetRank()], 0, 0, SRCCOPY);
-				m_Card2Rect = CRect(860, 650, 860 + cardW, 650 + cardH);
-			}
-			if (players.at(0)->GetHand().size() >= 3) {
-				if (cardClicked == 3) {
-					if (hideCard) {
-						pDC->BitBlt(920, 620, cardW, cardH, &memDCBack, 0, 0, SRCCOPY);
-					}
-					else {
-						pDC->BitBlt(920, 620, cardW, cardH, cardsMap[players.at(0)->GetHand().at(2).GetSuit()][players.at(0)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-					}
-					m_Card3Rect = CRect(920, 620, 920 + cardW, 620 + cardH);
-				}
-				else {
-					pDC->BitBlt(920, 650, cardW, cardH, cardsMap[players.at(0)->GetHand().at(2).GetSuit()][players.at(0)->GetHand().at(2).GetRank()], 0, 0, SRCCOPY);
-					m_Card3Rect = CRect(920, 650, 920 + cardW, 650 + cardH);
-				}
-			}
-		}
-	}
-
+	DrawCurrentPlayerCards(pDC, players.at(0));
 }
 
 void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -251,7 +211,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 	Player* p = currentRound->GetActivePlayer();
-	if (m_Card3Rect.PtInRect(point) && p->GetHand().size() >= 3)
+	if (cardArea.at(2).PtInRect(point) && p->GetHand().size() >= 3)
 	{
 		if (cardClicked == 3) {
 			cardClicked = 0;
@@ -262,7 +222,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 		hideCard = false;
 		Invalidate();
 	}
-	else if (m_Card2Rect.PtInRect(point) && p->GetHand().size() >= 2) {
+	else if (cardArea.at(1).PtInRect(point) && p->GetHand().size() >= 2) {
 		if (cardClicked == 2) {
 			cardClicked = 0;
 		}
@@ -272,7 +232,7 @@ void CG6TrucoView::OnLButtonDown(UINT nFlags, CPoint point)
 		hideCard = false;
 		Invalidate();
 	}
-	else if (m_Card1Rect.PtInRect(point) && p->GetHand().size() >= 1) {
+	else if (cardArea.at(0).PtInRect(point) && p->GetHand().size() >= 1) {
 		if (cardClicked == 1) {
 			cardClicked = 0;
 		}
@@ -297,18 +257,18 @@ void CG6TrucoView::OnRButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 	Player* p = currentRound->GetActivePlayer();
-	if (m_Card3Rect.PtInRect(point) && p->GetHand().size() >= 3)
+	if (cardArea.at(2).PtInRect(point) && p->GetHand().size() >= 3)
 	{
 		cardClicked = 3;
 		hideCard = true;
 		Invalidate();
 	}
-	else if (m_Card2Rect.PtInRect(point) && p->GetHand().size() >= 2) {
+	else if (cardArea.at(1).PtInRect(point) && p->GetHand().size() >= 2) {
 		cardClicked = 2;
 		hideCard = true;
 		Invalidate();
 	}
-	else if (m_Card1Rect.PtInRect(point) && p->GetHand().size() >= 1) {
+	else if (cardArea.at(0).PtInRect(point) && p->GetHand().size() >= 1) {
 		cardClicked = 1;
 		hideCard = true;
 		Invalidate();
