@@ -5,6 +5,7 @@
 #include <vector>
 #include "Card.h"
 #include <functional>
+#include "IndexOutOfRangeException.cpp"
 
 class Player {
 public:

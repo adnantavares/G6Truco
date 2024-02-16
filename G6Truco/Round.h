@@ -10,6 +10,7 @@
 #include <utility>
 #include <vector>
 #include "CPUPlayer.h"
+#include <iostream>
 
 // Forward Declaration
 class CPUPlayer;

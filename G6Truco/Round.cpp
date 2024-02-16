@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Round.h"
 
-
 std::mutex Round::playingMutex;
 std::condition_variable Round::playingConditionVariable;
 
@@ -110,8 +109,13 @@ void Round::RemovePlayedCards()
 {
 	roundCards.clear();
 
-	for (auto& player : players) {
-		player->RemoveSelectedCard();
+	try {
+		for (auto& player : players) {
+			player->RemoveSelectedCard();
+		}
+	}
+	catch (const IndexOutOfRangeException& e) {
+		std::cerr << "Exception caught: " << e.what() << std::endl;
 	}
 }
 

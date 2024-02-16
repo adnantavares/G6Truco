@@ -8,6 +8,10 @@ Player::Player(PlayerType type) : isHandHidden(false), playerType(type)
 
 void Player::RemoveSelectedCard()
 {
+	if (selectedCardIndex < 0 || selectedCardIndex >= hand.size()) {
+		throw IndexOutOfRangeException("Selected card index is out of range.");
+	}
+
 	Card cardToRemove = GetHand()[selectedCardIndex];
 	auto it = std::find(hand.begin(), hand.end(), cardToRemove);
 	if (it != hand.end()) {
